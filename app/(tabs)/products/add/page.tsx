@@ -1,0 +1,58 @@
+"use client";
+
+import React from "react";
+import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
+import { router, Stack } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
+import ProductForm from "@/components/ProductForm";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "@/colors";
+
+export default function AddProductScreen() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <div style={webStyle(styles.header)}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <ChevronLeft size={24} color="#1F2937" />
+        </TouchableOpacity>
+        <span style={webStyle(styles.title)}>Add Product</span>
+        <div style={webStyle(styles.placeholder)} />
+      </div>
+      <ProductForm />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.primary,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  backButton: {
+    padding: 4,
+  },
+  title: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "700" as const,
+    color: "#1F2937",
+    textAlign: "center",
+    marginLeft: -32,
+  },
+  placeholder: {
+    width: 32,
+  },
+});
