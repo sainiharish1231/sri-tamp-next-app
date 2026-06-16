@@ -2,7 +2,6 @@
 
 
 import { X, Plus, Trash2, Edit, Search, CheckCircle, AlertCircle, Loader } from "lucide-react";
-import MaterialService from "@/services/MaterialService";
 
 interface MaterialsModalProps {
   onClose: () => void;

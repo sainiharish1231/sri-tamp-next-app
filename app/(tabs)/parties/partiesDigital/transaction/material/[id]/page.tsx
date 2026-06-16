@@ -1,6 +1,5 @@
 "use client";
 
-
-import MaterialTransactionDetail from "@/components/MaterialTransactionDetail";
-
-export default MaterialTransactionDetail;
+export default function Page() {
+  return <div className="p-8"><h1>Page Content</h1></div>;
+}

@@ -1,6 +1,5 @@
 "use client";
 
-
-import FinancialTransactionDetail from "@/components/FinancialTransactionDetail";
-
-export default FinancialTransactionDetail;
+export default function Page() {
+  return <div className="p-8"><h1>Page Content</h1></div>;
+}

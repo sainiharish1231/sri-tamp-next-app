@@ -1,6 +1,5 @@
 "use client";
 
-
-import OrderDetailPage from "@/components/OrderDetailPage";
-
-export default OrderDetailPage;
+export default function Page() {
+  return <div className="p-8"><h1>Page Content</h1></div>;
+}

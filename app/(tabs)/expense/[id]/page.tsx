@@ -1,6 +1,5 @@
 "use client";
 
-import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
-
-// app/expense/[id].tsx
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+export default function Page() {
+  return <div className="p-8"><h1>Page Content</h1></div>;
+}
