@@ -10,7 +10,6 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { Activity, ArrowRight, RefreshCw } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { colors } from "@/colors";
