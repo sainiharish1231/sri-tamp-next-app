@@ -1,5 +1,6 @@
 "use client";
 
+
 import { Link, Stack } from "next/navigation";
 import { colors } from "@/colors";
 

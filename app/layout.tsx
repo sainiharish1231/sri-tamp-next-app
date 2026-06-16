@@ -1,3 +1,5 @@
+"use client";
+
 import type { Metadata } from "next";
 import Providers from "@/components/Providers";
 import "./globals.css";

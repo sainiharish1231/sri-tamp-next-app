@@ -1,5 +1,6 @@
 "use client";
 
+
 import { type ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & { href: Href & string };
