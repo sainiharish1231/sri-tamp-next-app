@@ -1,3 +1,3 @@
-import Toast from "react-native-toast-message";
+import { toast } from "sonner";
 
-export default Toast;
+export default toast;

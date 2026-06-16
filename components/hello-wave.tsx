@@ -1,5 +1,5 @@
-import { webStyle } from "react-native";
-import Animated from 'react-native-reanimated';
+"use client";
+
 
 export function HelloWave() {
   return (

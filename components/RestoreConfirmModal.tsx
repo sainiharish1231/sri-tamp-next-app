@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
 import { RefreshCw, X } from "lucide-react";
 
 interface RestoreConfirmModalProps {

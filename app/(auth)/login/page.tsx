@@ -1,76 +1,32 @@
 "use client";
 
 import { colors } from "@/colors";
-import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import { useLanguage } from "@/hooks/use-language";
 import AuthService from "@/services/AuthService";
 import { useAuthStore } from "@/store/auth.store";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
-  StyleSheet,
-  Animated,
-  webStyle,
-} from "react-native";
-import Toast from "react-native-toast-message";
+import { Eye, EyeOff, ArrowRight, Check, ChevronDown, AlertCircle, LogIn } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Toast from "@/utils/Toast";
 import { Country } from "@/types/country.types";
 import CountriesService from "@/services/CountriesService";
-import { getDeviceMetrics } from "@/utils/responsive";
 
-const { width, height, isXs: isSmallDevice } = getDeviceMetrics();
-
-export default function LoginScreen() {
+export default function LoginPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { setSession, isAuthenticated } = useAuthStore();
+  
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
-  const [forgotEmail, setForgotEmail] = useState("");
-  const [forgotPhone, setForgotPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [forgotPhoneError, setForgotPhoneError] = useState("");
-  const [forgotEmailError, setForgotEmailError] = useState("");
-
   const [loading, setLoading] = useState(false);
-  const [forgotLoading, setForgotLoading] = useState(false);
-
-  // UI states
   const [showPin, setShowPin] = useState(false);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [showForgotModal, setShowForgotModal] = useState(false);
-
-  // Country states
+  
   const [countries, setCountries] = useState<Country[]>([]);
   const [countriesLoading, setCountriesLoading] = useState(false);
   const [showCountryModal, setShowCountryModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
-
-  // Animation values
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(50)).current;
-  const forgotModalAnim = useRef(new Animated.Value(0)).current;
-  const shakeAnimation = useRef(new Animated.Value(0)).current;
-
-  // Refs
-  const scrollViewRef = useRef<ScrollView>(null);
-  const phoneInputRef = useRef<TextInput>(null);
-  const pinInputRef = useRef<TextInput>(null);
-  const forgotPhoneInputRef = useRef<TextInput>(null);
-  const forgotEmailInputRef = useRef<TextInput>(null);
 
   const defaultCountry: Country = {
     id: "in",
@@ -81,51 +37,24 @@ export default function LoginScreen() {
     isoCode: "356",
   };
 
-  const [selectedCountry, setSelectedCountry] =
-    useState<Country>(defaultCountry);
-
-  // Entry animation
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: false,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 800,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, []);
-
-  // Forgot modal animation
-  useEffect(() => {
-    if (showForgotModal) {
-      Animated.spring(forgotModalAnim, {
-        toValue: 1,
-        tension: 65,
-        friction: 11,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      forgotModalAnim.setValue(0);
-    }
-  }, [showForgotModal]);
+  const [selectedCountry, setSelectedCountry] = useState<Country>(defaultCountry);
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotPhone, setForgotPhone] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotPhoneError, setForgotPhoneError] = useState("");
+  const [forgotEmailError, setForgotEmailError] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
       router.replace("/(tabs)");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
-  // Fetch countries
   useEffect(() => {
     fetchCountries();
   }, []);
 
-  // Filter countries
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredCountries(countries);
@@ -140,29 +69,6 @@ export default function LoginScreen() {
       setFilteredCountries(filtered);
     }
   }, [searchQuery, countries]);
-
-  // Keyboard listeners
-  useEffect(() => {
-    const showSub = Keyboard.addListener(
-      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
-      (e) => {
-        setKeyboardVisible(true);
-        setKeyboardHeight(e.endCoordinates.height);
-      },
-    );
-    const hideSub = Keyboard.addListener(
-      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false);
-        setKeyboardHeight(0);
-      },
-    );
-
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
 
   const fetchCountries = async () => {
     try {
@@ -180,53 +86,20 @@ export default function LoginScreen() {
         if (india) setSelectedCountry(india);
       }
     } catch (err) {
-      console.log("Error fetching countries:", err);
+      console.log("[v0] Error fetching countries:", err);
     } finally {
       setCountriesLoading(false);
     }
   };
 
-  const shakeError = () => {
-    Animated.sequence([
-      Animated.timing(shakeAnimation, {
-        toValue: 10,
-        duration: 50,
-        useNativeDriver: false,
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: -10,
-        duration: 50,
-        useNativeDriver: false,
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: 10,
-        duration: 50,
-        useNativeDriver: false,
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: -10,
-        duration: 50,
-        useNativeDriver: false,
-      }),
-      Animated.timing(shakeAnimation, {
-        toValue: 0,
-        duration: 50,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
-
-  // Validation functions
   const validatePhone = useCallback((): boolean => {
     const trimmedPhone = phone.trim();
     if (!trimmedPhone) {
       setPhoneError(t("phone_required") || "Phone number is required");
-      shakeError();
       return false;
     }
     if (!/^[0-9]{10}$/.test(trimmedPhone)) {
       setPhoneError(t("invalid_phone") || "Enter valid 10-digit phone number");
-      shakeError();
       return false;
     }
     setPhoneError("");
@@ -237,12 +110,10 @@ export default function LoginScreen() {
     const trimmedPin = pin.trim();
     if (!trimmedPin) {
       setLoginError(t("pin_required") || "PIN is required");
-      shakeError();
       return false;
     }
     if (!/^[0-9]{6}$/.test(trimmedPin)) {
       setLoginError(t("invalid_pin") || "Enter valid 6-digit PIN");
-      shakeError();
       return false;
     }
     setLoginError("");
@@ -277,44 +148,13 @@ export default function LoginScreen() {
     return true;
   }, [forgotEmail, t]);
 
-  const clearErrors = () => {
-    setPhoneError("");
-    setLoginError("");
-  };
-
-  const clearForgotErrors = () => {
-    setForgotPhoneError("");
-    setForgotEmailError("");
-  };
-
-  const showToast = (
-    type: "success" | "error",
-    text1: string,
-    text2?: string,
-  ) => {
-    Toast.show({
-      type,
-      text1,
-      text2,
-      visibilityTime: 3500,
-      position: "top",
-      topOffset: Platform.OS === "ios" ? 60 : 30,
-      text1Style: {
-        fontSize: 16,
-        fontWeight: "600",
-      },
-      text2Style: {
-        fontSize: 14,
-      },
-    });
-  };
-
-  const handleLogin = async () => {
-    Keyboard.dismiss();
-    clearErrors();
-
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!validatePhone() || !validatePin()) {
-      showToast("error", t("validation_error"), t("please_fix_errors"));
+      Toast.error(t("validation_error"), {
+        description: t("please_fix_errors"),
+      });
       return;
     }
 
@@ -325,48 +165,38 @@ export default function LoginScreen() {
       const { token, ...user } = userWithToken;
       await setSession({ token, user });
 
-      showToast(
-        "success",
+      Toast.success(
         t("login_success") || "Login Successful!",
-        t("welcome") || "Welcome back!",
+        { description: t("welcome") || "Welcome back!" }
       );
 
       setTimeout(() => {
         router.replace("/(tabs)");
-      }, 1500);
+      }, 1000);
     } catch (err: any) {
-      console.log("❌ Login failed:", err);
-
+      console.log("[v0] Login failed:", err);
       const errorMsg =
         err.response?.data?.message ||
         err.message ||
         t("login_failed") ||
         "Login failed";
       setLoginError(errorMsg);
-      shakeError();
-      showToast("error", t("login_failed"), errorMsg);
+      Toast.error(t("login_failed"), { description: errorMsg });
     } finally {
       setLoading(false);
     }
   };
 
-  const closeForgotModal = () => {
-    Keyboard.dismiss();
-    setShowForgotModal(false);
-    setForgotPhone("");
-    setForgotEmail("");
-    clearForgotErrors();
-  };
-
-  const handleForgotPassword = async () => {
-    Keyboard.dismiss();
-    clearForgotErrors();
-
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     const isPhoneValid = validateForgotPhone();
     const isEmailValid = validateForgotEmail();
 
     if (!isPhoneValid || !isEmailValid) {
-      showToast("error", t("validation_error"), t("please_fix_errors"));
+      Toast.error(t("validation_error"), {
+        description: t("please_fix_errors"),
+      });
       return;
     }
 
@@ -378,971 +208,303 @@ export default function LoginScreen() {
         email: forgotEmail.trim().toLowerCase(),
       });
 
-      showToast(
-        "success",
+      Toast.success(
         t("reset_request_sent"),
-        response?.data?.message ||
-          response?.message ||
-          t("check_email_instructions"),
+        {
+          description:
+            response?.data?.message ||
+            response?.message ||
+            t("check_email_instructions"),
+        }
       );
-      closeForgotModal();
+      
+      setShowForgotModal(false);
+      setForgotPhone("");
+      setForgotEmail("");
+      setForgotPhoneError("");
+      setForgotEmailError("");
     } catch (err: any) {
-      console.log("❌ Forgot password failed:", err);
-
+      console.log("[v0] Forgot password failed:", err);
       const errorMsg =
         err?.response?.data?.message ||
         err?.message ||
         t("forgot_password_failed");
-      showToast("error", t("request_failed"), errorMsg);
+      Toast.error(t("request_failed"), { description: errorMsg });
     } finally {
       setForgotLoading(false);
     }
   };
 
-  const renderCountryItem = useCallback(
-    ({ item }: { item: Country }) => (
-      <TouchableOpacity
-        style={styles.countryItem}
-        onPress={() => {
-          setSelectedCountry(item);
-          setShowCountryModal(false);
-          setSearchQuery("");
-        }}
-        activeOpacity={0.7}
-      >
-        <span style={webStyle(styles.countryFlag)}>{item.flag}</span>
-        <div style={webStyle(styles.countryInfo)}>
-          <span style={webStyle(styles.countryName)}>{item.name}</span>
-          <span style={webStyle(styles.countryCode)}>{item.dialling_code}</span>
-        </div>
-        {selectedCountry.code === item.code && (
-          <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
-        )}
-      </TouchableOpacity>
-    ),
-    [selectedCountry.code, colors.primary],
-  );
-
   return (
-    <div style={webStyle(styles.container)}>
-      <LinearGradient
-        colors={[colors.primary, colors.secondary]}
-        style={styles.gradient}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.keyboardView}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-        >
-          <ScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            <div
-              style={webStyle([
-                styles.content,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
-              ])}
-            >
-              {/* Header Section */}
-              <div style={webStyle(styles.headerSection)}>
-                <span style={webStyle(styles.welcomeText)}>{t("welcome")}</span>
-                <span style={webStyle(styles.subtitleText)}>
-                  {t("continue_to_account")}
-                </span>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">{t("welcome")}</h1>
+          <p className="text-blue-100">{t("continue_to_account")}</p>
+        </div>
 
-              {/* Login Form Card */}
-              <div
-                style={webStyle([
-                  styles.formCard,
-                  { transform: [{ translateX: shakeAnimation }] },
-                ])}
-              >
-                {/* Phone Input */}
-                <div style={webStyle(styles.inputGroup)}>
-                  <span style={webStyle(styles.inputLabel)}>{t("phone_number")}</span>
-                  <div style={webStyle(styles.phoneRow)}>
-                    <TouchableOpacity
-                      onPress={() => setShowCountryModal(true)}
-                      style={[
-                        styles.countryButton,
-                        phoneError && styles.inputError,
-                      ]}
-                      activeOpacity={0.7}
-                    >
-                      <span style={webStyle(styles.flagText)}>
-                        {selectedCountry.flag}
-                      </span>
-                      <span style={webStyle(styles.dialCode)}>
-                        {selectedCountry.dialling_code}
-                      </span>
-                      <Ionicons name="chevron-down" size={16} color="#6B7280" />
-                    </TouchableOpacity>
-
-                    <div
-                      style={webStyle([
-                        styles.phoneInputContainer,
-                        phoneError && styles.inputError,
-                      ])}
-                    >
-                      <TextInput
-                        ref={phoneInputRef}
-                        style={styles.phoneInput}
-                        placeholder={t("enter_phone")}
-                        placeholderTextColor="#9CA3AF"
-                        keyboardType="number-pad"
-                        maxLength={10}
-                        value={phone}
-                        onChangeText={(text) => {
-                          setPhone(text);
-                          if (phoneError) setPhoneError("");
-                        }}
-                        onBlur={validatePhone}
-                      />
-                    </div>
-                  </div>
-                  {phoneError && (
-                    <div style={webStyle(styles.errorContainer)}>
-                      <Ionicons name="alert-circle" size={16} color="#EF4444" />
-                      <span style={webStyle(styles.errorText)}>{phoneError}</span>
-                    </div>
-                  )}
+        {/* Login Card */}
+        <div className="bg-white rounded-lg shadow-2xl p-8 mb-4">
+          <form onSubmit={handleLogin} className="space-y-6">
+            {/* Phone Input */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                {t("phone_number")}
+              </label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCountryModal(true)}
+                  className={`flex items-center gap-2 px-3 py-3 border rounded-lg transition ${
+                    phoneError
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 bg-gray-50 hover:border-gray-400"
+                  }`}
+                >
+                  <span>{selectedCountry.flag}</span>
+                  <span className="text-sm font-medium text-gray-700">{selectedCountry.dialling_code}</span>
+                  <ChevronDown size={16} className="text-gray-500" />
+                </button>
+                <div className="flex-1 relative">
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (phoneError) setPhoneError("");
+                    }}
+                    onBlur={validatePhone}
+                    placeholder={t("enter_phone")}
+                    maxLength={10}
+                    className={`w-full px-4 py-3 border rounded-lg transition focus:outline-none focus:ring-2 ${
+                      phoneError
+                        ? "border-red-500 focus:ring-red-500 bg-red-50"
+                        : "border-gray-300 focus:ring-blue-500 focus:border-transparent"
+                    }`}
+                  />
                 </div>
-
-                {/* PIN Input */}
-                <div style={webStyle(styles.inputGroup)}>
-                  <span style={webStyle(styles.inputLabel)}>{t("pin")}</span>
-                  <div
-                    style={webStyle([
-                      styles.pinInputContainer,
-                      loginError && styles.inputError,
-                    ])}
-                  >
-                    <TextInput
-                      ref={pinInputRef}
-                      style={styles.pinInput}
-                      placeholder={t("enter_pin")}
-                      placeholderTextColor="#9CA3AF"
-                      keyboardType="number-pad"
-                      maxLength={6}
-                      secureTextEntry={!showPin}
-                      value={pin}
-                      onChangeText={(text) => {
-                        setPin(text);
-                        if (loginError) setLoginError("");
-                      }}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowPin(!showPin)}
-                      style={styles.eyeButton}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons
-                        name={showPin ? "eye-off-outline" : "eye-outline"}
-                        size={22}
-                        color="#6B7280"
-                      />
-                    </TouchableOpacity>
-                  </div>
-                  {loginError && (
-                    <div style={webStyle(styles.errorContainer)}>
-                      <Ionicons name="alert-circle" size={16} color="#EF4444" />
-                      <span style={webStyle(styles.errorText)}>{loginError}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Forgot Password */}
-                <TouchableOpacity
-                  onPress={() => setShowForgotModal(true)}
-                  style={styles.forgotButton}
-                  activeOpacity={0.7}
-                >
-                  <span style={webStyle(styles.forgotText)}>{t("forgot_password")}</span>
-                </TouchableOpacity>
-
-                {/* Login Button */}
-                <TouchableOpacity
-                  onPress={handleLogin}
-                  disabled={loading}
-                  style={[styles.loginButton, loading && styles.buttonDisabled]}
-                  activeOpacity={0.8}
-                >
-                  <LinearGradient
-                    colors={[colors.primary, "#7C3AED"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.loginButtonGradient}
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="#fff" size="small" />
-                    ) : (
-                      <div style={webStyle(styles.loginButtonContent)}>
-                        <Ionicons
-                          name="log-in-outline"
-                          size={20}
-                          color="white"
-                        />
-                        <span style={webStyle(styles.loginButtonText)}>
-                          {t("sign_in")}
-                        </span>
-                      </div>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
-
-                {/* Register Link */}
-                <TouchableOpacity
-                  onPress={() => router.push("/")}
-                  style={styles.registerButton}
-                  activeOpacity={0.7}
-                >
-                  <span style={webStyle(styles.registerText)}>
-                    {t("dont_have_account")}{" "}
-                    <span style={webStyle(styles.registerLink)}>{t("sign_up")}</span>
-                  </span>
-                </TouchableOpacity>
               </div>
+              {phoneError && (
+                <div className="flex items-center gap-2 mt-2 text-red-600 text-sm">
+                  <AlertCircle size={16} />
+                  <span>{phoneError}</span>
+                </div>
+              )}
             </div>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </LinearGradient>
 
-      {/* Country Selection Modal */}
-      <KeyboardAwareModal
-        visible={showCountryModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowCountryModal(false)}
-      >
-        <div style={webStyle(styles.countryModalOverlay)}>
-          <TouchableWithoutFeedback onPress={() => setShowCountryModal(false)}>
-            <div style={webStyle(styles.modalBackdrop)} />
-          </TouchableWithoutFeedback>
-
-          <div style={webStyle(styles.countryModalContent)}>
-            <div style={webStyle(styles.countryModalHeader)}>
-              <div style={webStyle(styles.modalHandle)} />
-              <div style={webStyle(styles.countryModalTitleRow)}>
-                <span style={webStyle(styles.countryModalTitle)}>
-                  {t("select_country")}
-                </span>
-                <TouchableOpacity
-                  onPress={() => setShowCountryModal(false)}
-                  style={styles.closeButton}
-                >
-                  <Ionicons name="close-circle" size={28} color="#6B7280" />
-                </TouchableOpacity>
-              </div>
-
-              <div style={webStyle(styles.searchContainer)}>
-                <Ionicons name="search" size={20} color="#9CA3AF" />
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder={t("search_country_or_code")}
-                  placeholderTextColor="#9CA3AF"
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  autoFocus
+            {/* PIN Input */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                {t("pin")}
+              </label>
+              <div className="relative">
+                <input
+                  type={showPin ? "text" : "password"}
+                  value={pin}
+                  onChange={(e) => {
+                    setPin(e.target.value);
+                    if (loginError) setLoginError("");
+                  }}
+                  placeholder={t("enter_pin")}
+                  maxLength={6}
+                  className={`w-full px-4 py-3 border rounded-lg transition focus:outline-none focus:ring-2 ${
+                    loginError
+                      ? "border-red-500 focus:ring-red-500 bg-red-50"
+                      : "border-gray-300 focus:ring-blue-500 focus:border-transparent"
+                  }`}
                 />
-                {searchQuery.length > 0 && (
-                  <TouchableOpacity onPress={() => setSearchQuery("")}>
-                    <Ionicons name="close" size={20} color="#6B7280" />
-                  </TouchableOpacity>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+              {loginError && (
+                <div className="flex items-center gap-2 mt-2 text-red-600 text-sm">
+                  <AlertCircle size={16} />
+                  <span>{loginError}</span>
+                </div>
+              )}
             </div>
 
-            {countriesLoading ? (
-              <div style={webStyle(styles.loadingContainer)}>
-                <ActivityIndicator size="large" color={colors.primary} />
-                <span style={webStyle(styles.loadingText)}>{t("loading_countries")}</span>
-              </div>
-            ) : (
-              <FlatList
-                data={filteredCountries}
-                keyExtractor={(item) => item.id || item.code}
-                renderItem={renderCountryItem}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.countryList}
-                ListEmptyComponent={
-                  <div style={webStyle(styles.emptyState)}>
-                    <Ionicons name="globe-outline" size={48} color="#D1D5DB" />
-                    <span style={webStyle(styles.emptyStateText)}>
-                      {t("no_countries_found")}
-                    </span>
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(true)}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                {t("forgot_password")}
+              </button>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+              ) : (
+                <>
+                  <LogIn size={20} />
+                  {t("sign_in")}
+                </>
+              )}
+            </button>
+
+            {/* Register Link */}
+            <p className="text-center text-sm text-gray-600">
+              {t("dont_have_account")}{" "}
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="text-blue-600 hover:text-blue-700 font-semibold"
+              >
+                {t("sign_up")}
+              </button>
+            </p>
+          </form>
+        </div>
+      </div>
+
+      {/* Country Modal */}
+      {showCountryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
+          <div className="w-full max-w-md bg-white rounded-t-2xl p-4 max-h-96 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 sticky top-0 bg-white">
+              <h2 className="text-lg font-bold text-gray-900">{t("select_country")}</h2>
+              <button
+                onClick={() => setShowCountryModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <input
+              type="text"
+              placeholder={t("search_country")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <div className="space-y-2">
+              {filteredCountries.map((country) => (
+                <button
+                  key={country.id}
+                  onClick={() => {
+                    setSelectedCountry(country);
+                    setShowCountryModal(false);
+                    setSearchQuery("");
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 rounded-lg transition text-left"
+                >
+                  <span className="text-2xl">{country.flag}</span>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{country.name}</p>
+                    <p className="text-sm text-gray-600">{country.dialling_code}</p>
                   </div>
-                }
-              />
-            )}
+                  {selectedCountry.code === country.code && (
+                    <Check size={20} className="text-blue-600" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </KeyboardAwareModal>
+      )}
 
       {/* Forgot Password Modal */}
-      <KeyboardAwareModal
-        visible={showForgotModal}
-        animationType="none"
-        transparent={true}
-        onRequestClose={closeForgotModal}
-      >
-        <div
-          style={webStyle([
-            styles.forgotModalOverlay,
-            {
-              opacity: forgotModalAnim,
-              transform: [
-                {
-                  translateY: forgotModalAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [300, 0],
-                  }),
-                },
-              ],
-            },
-          ])}
-        >
-          <TouchableWithoutFeedback onPress={closeForgotModal}>
-            <div style={webStyle(styles.modalBackdrop)} />
-          </TouchableWithoutFeedback>
+      {showForgotModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-96 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900">{t("reset_password")}</h2>
+              <button
+                onClick={() => setShowForgotModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
 
-          <ScrollView
-            contentContainerStyle={styles.forgotScrollContent}
-            keyboardShouldPersistTaps="handled"
-            bounces={false}
-          >
-            <div style={webStyle(styles.forgotModalContent)}>
-              <div style={webStyle(styles.modalHandle)} />
-
-              <div style={webStyle(styles.forgotHeader)}>
-                <div style={webStyle(styles.forgotIconContainer)}>
-                  <Ionicons
-                    name="key-outline"
-                    size={28}
-                    color={colors.primary}
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t("phone_number")}
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCountryModal(true)}
+                    className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:border-gray-400"
+                  >
+                    <span>{selectedCountry.flag}</span>
+                    <span className="text-sm text-gray-700">{selectedCountry.dialling_code}</span>
+                  </button>
+                  <input
+                    type="tel"
+                    value={forgotPhone}
+                    onChange={(e) => {
+                      setForgotPhone(e.target.value);
+                      if (forgotPhoneError) setForgotPhoneError("");
+                    }}
+                    onBlur={validateForgotPhone}
+                    placeholder={t("enter_phone")}
+                    maxLength={10}
+                    className={`flex-1 px-3 py-2 border rounded-lg transition focus:outline-none focus:ring-2 ${
+                      forgotPhoneError
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                    }`}
                   />
-                </div>
-                <span style={webStyle(styles.forgotTitle)}>{t("forgot_password")}</span>
-                <span style={webStyle(styles.forgotSubtitle)}>
-                  {t("forgot_password_help")}
-                </span>
-              </div>
-
-              {/* Phone Input */}
-              <div style={webStyle(styles.inputGroup)}>
-                <span style={webStyle(styles.inputLabel)}>{t("mobile_number")}</span>
-                <div style={webStyle(styles.phoneRow)}>
-                  <TouchableOpacity
-                    onPress={() => setShowCountryModal(true)}
-                    style={[
-                      styles.countryButtonSmall,
-                      forgotPhoneError && styles.inputError,
-                    ]}
-                    activeOpacity={0.7}
-                  >
-                    <span style={webStyle(styles.flagText)}>{selectedCountry.flag}</span>
-                    <span style={webStyle(styles.dialCodeSmall)}>
-                      {selectedCountry.dialling_code}
-                    </span>
-                    <Ionicons name="chevron-down" size={14} color="#6B7280" />
-                  </TouchableOpacity>
-
-                  <div
-                    style={webStyle([
-                      styles.phoneInputContainer,
-                      forgotPhoneError && styles.inputError,
-                    ])}
-                  >
-                    <TextInput
-                      ref={forgotPhoneInputRef}
-                      style={styles.phoneInput}
-                      placeholder={t("enter_mobile_number")}
-                      placeholderTextColor="#9CA3AF"
-                      keyboardType="number-pad"
-                      maxLength={10}
-                      value={forgotPhone}
-                      onChangeText={(text) => {
-                        setForgotPhone(text);
-                        if (forgotPhoneError) setForgotPhoneError("");
-                      }}
-                      onBlur={validateForgotPhone}
-                    />
-                  </div>
                 </div>
                 {forgotPhoneError && (
-                  <div style={webStyle(styles.errorContainer)}>
-                    <Ionicons name="alert-circle" size={14} color="#EF4444" />
-                    <span style={webStyle(styles.errorTextSmall)}>
-                      {forgotPhoneError}
-                    </span>
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{forgotPhoneError}</p>
                 )}
               </div>
 
-              {/* Email Input */}
-              <div style={webStyle(styles.inputGroup)}>
-                <span style={webStyle(styles.inputLabel)}>{t("email_address")}</span>
-                <div
-                  style={webStyle([
-                    styles.emailInputContainer,
-                    forgotEmailError && styles.inputError,
-                  ])}
-                >
-                  <Ionicons
-                    name="mail-outline"
-                    size={20}
-                    color="#9CA3AF"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    ref={forgotEmailInputRef}
-                    style={styles.emailInput}
-                    placeholder={t("enter_email_address")}
-                    placeholderTextColor="#9CA3AF"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={forgotEmail}
-                    onChangeText={(text) => {
-                      setForgotEmail(text);
-                      if (forgotEmailError) setForgotEmailError("");
-                    }}
-                    onBlur={validateForgotEmail}
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t("email")}
+                </label>
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => {
+                    setForgotEmail(e.target.value);
+                    if (forgotEmailError) setForgotEmailError("");
+                  }}
+                  onBlur={validateForgotEmail}
+                  placeholder={t("enter_email")}
+                  className={`w-full px-3 py-2 border rounded-lg transition focus:outline-none focus:ring-2 ${
+                    forgotEmailError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                />
                 {forgotEmailError && (
-                  <div style={webStyle(styles.errorContainer)}>
-                    <Ionicons name="alert-circle" size={14} color="#EF4444" />
-                    <span style={webStyle(styles.errorTextSmall)}>
-                      {forgotEmailError}
-                    </span>
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{forgotEmailError}</p>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div style={webStyle(styles.forgotActions)}>
-                <TouchableOpacity
-                  onPress={closeForgotModal}
-                  style={styles.cancelButton}
-                  activeOpacity={0.7}
-                >
-                  <span style={webStyle(styles.cancelButtonText)}>{t("cancel")}</span>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={handleForgotPassword}
-                  disabled={forgotLoading}
-                  style={[
-                    styles.submitButton,
-                    forgotLoading && styles.buttonDisabled,
-                  ]}
-                  activeOpacity={0.8}
-                >
-                  <LinearGradient
-                    colors={[colors.primary, "#7C3AED"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.submitButtonGradient}
-                  >
-                    {forgotLoading ? (
-                      <ActivityIndicator color="#fff" size="small" />
-                    ) : (
-                      <div style={webStyle(styles.submitButtonContent)}>
-                        <Ionicons name="send-outline" size={18} color="white" />
-                        <span style={webStyle(styles.submitButtonText)}>
-                          {t("send_reset_link")}
-                        </span>
-                      </div>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
-              </div>
-            </div>
-          </ScrollView>
+              <button
+                type="submit"
+                disabled={forgotLoading}
+                className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {forgotLoading ? `${t("sending")}...` : t("send_reset_link")}
+              </button>
+            </form>
+          </div>
         </div>
-      </KeyboardAwareModal>
-
-      <Toast />
+      )}
     </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    minHeight: "100vh",
-  },
-  gradient: {
-    flex: 1,
-    minHeight: "100vh",
-  },
-  decorativeCircle1: {
-    position: "absolute",
-    top: -100,
-    left: -50,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
-  decorativeCircle2: {
-    position: "absolute",
-    top: height * 0.3,
-    right: -80,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: "rgba(255,255,255,0.05)",
-  },
-  decorativeCircle3: {
-    position: "absolute",
-    bottom: -50,
-    left: width * 0.3,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "rgba(255,255,255,0.08)",
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: isSmallDevice ? 24 : 48,
-    paddingHorizontal: isSmallDevice ? 14 : 24,
-  },
-  content: {
-    width: "100%",
-    maxWidth: 460,
-    alignSelf: "center",
-  },
-  headerSection: {
-    alignItems: "center",
-    marginBottom: isSmallDevice ? 18 : 26,
-  },
-  logoContainer: {
-    marginBottom: isSmallDevice ? 14 : 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  logoGradient: {
-    width: isSmallDevice ? 72 : 100,
-    height: isSmallDevice ? 72 : 100,
-    borderRadius: isSmallDevice ? 20 : 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  welcomeText: {
-    fontSize: isSmallDevice ? 28 : 34,
-    fontWeight: "800",
-    color: "white",
-    marginBottom: 6,
-    letterSpacing: 0,
-    textAlign: "center",
-  },
-  subtitleText: {
-    fontSize: isSmallDevice ? 13 : 15,
-    color: "rgba(255,255,255,0.88)",
-    textAlign: "center",
-    lineHeight: isSmallDevice ? 19 : 22,
-    fontWeight: "500",
-    maxWidth: 320,
-  },
-  formCard: {
-    backgroundColor: "rgba(255,255,255,0.92)",
-    borderRadius: isSmallDevice ? 20 : 24,
-    padding: isSmallDevice ? 16 : 24,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.46)",
-    shadowColor: "#1F2937",
-    shadowOffset: { width: 0, height: 18 },
-    shadowOpacity: 0.18,
-    shadowRadius: 34,
-    elevation: 12,
-  },
-  inputGroup: {
-    marginBottom: isSmallDevice ? 14 : 20,
-  },
-  inputLabel: {
-    fontSize: isSmallDevice ? 12 : 14,
-    fontWeight: "700",
-    color: "#111827",
-    marginBottom: isSmallDevice ? 6 : 8,
-    letterSpacing: 0,
-  },
-  phoneRow: {
-    flexDirection: "row",
-    gap: isSmallDevice ? 8 : 12,
-  },
-  countryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: isSmallDevice ? 12 : 14,
-    paddingHorizontal: isSmallDevice ? 10 : 14,
-    paddingVertical: isSmallDevice ? 12 : 16,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    gap: isSmallDevice ? 5 : 8,
-  },
-  countryButtonSmall: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9FAFB",
-    borderRadius: isSmallDevice ? 10 : 12,
-    paddingHorizontal: isSmallDevice ? 10 : 12,
-    paddingVertical: isSmallDevice ? 12 : 14,
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    gap: 6,
-  },
-  flagText: {
-    fontSize: isSmallDevice ? 18 : 22,
-  },
-  dialCode: {
-    fontSize: isSmallDevice ? 13 : 16,
-    fontWeight: "600",
-    color: "#374151",
-  },
-  dialCodeSmall: {
-    fontSize: isSmallDevice ? 12 : 14,
-    fontWeight: "600",
-    color: "#374151",
-  },
-  phoneInputContainer: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: isSmallDevice ? 12 : 14,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    minHeight: isSmallDevice ? 48 : 54,
-    overflow: "hidden",
-  },
-  phoneInput: {
-    flex: 1,
-    paddingHorizontal: isSmallDevice ? 12 : 16,
-    paddingVertical: isSmallDevice ? 12 : 16,
-    fontSize: isSmallDevice ? 14 : 16,
-    color: "#1F2937",
-  },
-  pinInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: isSmallDevice ? 12 : 14,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    minHeight: isSmallDevice ? 48 : 54,
-  },
-  pinInput: {
-    flex: 1,
-    paddingHorizontal: isSmallDevice ? 12 : 16,
-    paddingVertical: isSmallDevice ? 12 : 16,
-    fontSize: isSmallDevice ? 14 : 16,
-    color: "#1F2937",
-  },
-  eyeButton: {
-    padding: isSmallDevice ? 10 : 12,
-  },
-  inputError: {
-    borderColor: "#EF4444",
-    backgroundColor: "#FEF2F2",
-  },
-  errorContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 8,
-    gap: 6,
-  },
-  errorText: {
-    color: "#EF4444",
-    fontSize: isSmallDevice ? 11 : 13,
-    fontWeight: "500",
-  },
-  errorTextSmall: {
-    color: "#EF4444",
-    fontSize: 12,
-    fontWeight: "500",
-    marginTop: 4,
-  },
-  forgotButton: {
-    alignSelf: "flex-end",
-    marginBottom: isSmallDevice ? 16 : 24,
-  },
-  forgotText: {
-    color: "#7C3AED",
-    fontSize: isSmallDevice ? 12 : 14,
-    fontWeight: "600",
-  },
-  loginButton: {
-    borderRadius: isSmallDevice ? 14 : 18,
-    overflow: "hidden",
-    shadowColor: "#7C3AED",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  loginButtonGradient: {
-    paddingVertical: isSmallDevice ? 13 : 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loginButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  loginButtonText: {
-    color: "white",
-    fontSize: isSmallDevice ? 15 : 16,
-    fontWeight: "700",
-    letterSpacing: 0,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  registerButton: {
-    alignItems: "center",
-    marginTop: isSmallDevice ? 14 : 20,
-  },
-  registerText: {
-    fontSize: isSmallDevice ? 12 : 14,
-    color: "#6B7280",
-  },
-  registerLink: {
-    color: "#7C3AED",
-    fontWeight: "600",
-  },
-  modalBackdrop: {
-    flex: 1,
-  },
-  countryModalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: isSmallDevice ? 12 : 20,
-  },
-  countryModalContent: {
-    backgroundColor: "white",
-    borderRadius: 8,
-    width: "100%",
-    maxWidth: 520,
-    maxHeight: height * (isSmallDevice ? 0.68 : 0.75),
-  },
-  countryModalHeader: {
-    padding: isSmallDevice ? 14 : 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  modalHandle: {
-    width: 40,
-    height: 4,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 2,
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  countryModalTitleRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  countryModalTitle: {
-    fontSize: isSmallDevice ? 18 : 22,
-    fontWeight: "700",
-    color: "#1F2937",
-  },
-  closeButton: {
-    padding: 4,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: isSmallDevice ? 9 : 12,
-    fontSize: isSmallDevice ? 14 : 16,
-    color: "#1F2937",
-  },
-  countryItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: isSmallDevice ? 10 : 14,
-    paddingHorizontal: isSmallDevice ? 14 : 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  countryFlag: {
-    fontSize: isSmallDevice ? 22 : 28,
-    marginRight: isSmallDevice ? 10 : 16,
-  },
-  countryInfo: {
-    flex: 1,
-  },
-  countryName: {
-    fontSize: isSmallDevice ? 14 : 16,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginBottom: 2,
-  },
-  countryCode: {
-    fontSize: isSmallDevice ? 12 : 14,
-    color: "#6B7280",
-  },
-  countryList: {
-    paddingBottom: 20,
-  },
-  loadingContainer: {
-    padding: 40,
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 12,
-    color: "#6B7280",
-    fontSize: 14,
-  },
-  emptyState: {
-    padding: 40,
-    alignItems: "center",
-  },
-  emptyStateText: {
-    marginTop: 12,
-    color: "#9CA3AF",
-    fontSize: 14,
-  },
-  forgotModalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: isSmallDevice ? 12 : 20,
-  },
-  forgotKeyboardView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  forgotScrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    width: "100%",
-  },
-  forgotModalContent: {
-    backgroundColor: "white",
-    borderRadius: 8,
-    width: "100%",
-    maxWidth: 520,
-    padding: isSmallDevice ? 16 : 24,
-    minHeight: height * (isSmallDevice ? 0.44 : 0.5),
-  },
-  forgotHeader: {
-    alignItems: "center",
-    marginBottom: isSmallDevice ? 20 : 32,
-  },
-  forgotIconContainer: {
-    width: isSmallDevice ? 50 : 64,
-    height: isSmallDevice ? 50 : 64,
-    borderRadius: isSmallDevice ? 12 : 16,
-    backgroundColor: "#F3E8FF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: isSmallDevice ? 10 : 16,
-  },
-  forgotTitle: {
-    fontSize: isSmallDevice ? 20 : 24,
-    fontWeight: "700",
-    color: "#1F2937",
-    marginBottom: 8,
-  },
-  forgotSubtitle: {
-    fontSize: isSmallDevice ? 12 : 14,
-    color: "#6B7280",
-    textAlign: "center",
-    lineHeight: isSmallDevice ? 17 : 20,
-  },
-  emailInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9FAFB",
-    borderRadius: isSmallDevice ? 12 : 16,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-    paddingHorizontal: isSmallDevice ? 12 : 16,
-  },
-  inputIcon: {
-    marginRight: isSmallDevice ? 8 : 12,
-  },
-  emailInput: {
-    flex: 1,
-    paddingVertical: isSmallDevice ? 12 : 16,
-    fontSize: isSmallDevice ? 14 : 16,
-    color: "#1F2937",
-  },
-  forgotActions: {
-    flexDirection: "row",
-    gap: isSmallDevice ? 8 : 12,
-    marginTop: isSmallDevice ? 16 : 24,
-  },
-  cancelButton: {
-    flex: 1,
-    backgroundColor: "#F3F4F6",
-    borderRadius: isSmallDevice ? 12 : 16,
-    paddingVertical: isSmallDevice ? 12 : 16,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-  },
-  cancelButtonText: {
-    color: "#6B7280",
-    fontWeight: "600",
-    fontSize: isSmallDevice ? 14 : 16,
-  },
-  submitButton: {
-    flex: 2,
-    borderRadius: isSmallDevice ? 12 : 16,
-    overflow: "hidden",
-    shadowColor: "#7C3AED",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  submitButtonGradient: {
-    paddingVertical: isSmallDevice ? 12 : 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  submitButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  submitButtonText: {
-    color: "white",
-    fontSize: isSmallDevice ? 14 : 16,
-    fontWeight: "700",
-    letterSpacing: 0,
-  },
-});

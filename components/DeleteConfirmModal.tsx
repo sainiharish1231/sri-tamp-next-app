@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
 import { Trash2, X } from "lucide-react";
 
 interface DeleteConfirmModalProps {

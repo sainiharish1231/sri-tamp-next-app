@@ -1,11 +1,8 @@
+import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 "use client";
 
-import React from "react";
-import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { router, Stack } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import { router, Stack } from "next/navigation";
 import ProductForm from "@/components/ProductForm";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/colors";
 
 export default function AddProductScreen() {

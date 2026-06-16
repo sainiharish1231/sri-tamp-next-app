@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { AlertCircle, ArrowLeft, PencilLine } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import EmployeeForm, { EmployeeFormData } from "@/components/EmployeeForm";

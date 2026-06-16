@@ -1,10 +1,8 @@
+import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 "use client";
 
-import React from "react";
-import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams, useRouter } from "next/navigation";
+import { MaterialCommunityIcons as Icon } from "lucide-react";
 import CreateOrderForm from "@/components/OrderForm";
 import { colors } from "@/colors";
 import { useLanguage } from "@/hooks/use-language";

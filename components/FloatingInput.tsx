@@ -1,5 +1,6 @@
+"use client";
+
 import { colors } from "@/colors";
-import React, { useState } from "react";
 import {
   AlertCircle,
   CheckCircle,

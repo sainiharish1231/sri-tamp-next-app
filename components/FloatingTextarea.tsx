@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+
 import { AlertCircle, CheckCircle, Info, Loader, Wand2 } from "lucide-react";
 import { generateText } from "@rork-ai/toolkit-sdk";
 

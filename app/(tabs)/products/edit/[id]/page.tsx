@@ -1,12 +1,9 @@
+import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { TouchableOpacity, StyleSheet, ActivityIndicator, webStyle } from "react-native";
-import { router, useLocalSearchParams, Stack } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import { router, useLocalSearchParams, Stack } from "next/navigation";
 import ProductForm from "@/components/ProductForm";
 import ProductService from "@/services/ProductService";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "@/utils/Toast";
 
 export default function EditProductScreen() {

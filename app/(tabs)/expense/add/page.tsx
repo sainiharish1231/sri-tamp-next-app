@@ -1,10 +1,7 @@
+import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 "use client";
 
-import React, { useState } from "react";
-import { TouchableOpacity, StyleSheet, Alert, webStyle } from "react-native";
-import { useRouter, Stack } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft } from "lucide-react-native";
+import { useRouter, Stack } from "next/navigation";
 import { colors } from "@/colors";
 import { CreateExpenseDto } from "@/types/expense.types";
 import expenseService from "@/services/ExpenseService";

@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  webStyle,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Activity, ArrowRight, RefreshCw } from "lucide-react-native";
-import { useRouter } from "expo-router";
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, webStyle } from "@/utils/reactNativeReplacements";
+import { useRouter } from "next/navigation";
 import { colors } from "@/colors";
 import ActivityService from "@/services/ActivityService";
 import type { ActivityLog, ActivityModule } from "@/types/activity.types";

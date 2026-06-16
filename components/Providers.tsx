@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import Toast from "react-native-toast-message";
+import { Toaster } from "sonner";
 import { AppAlertProvider } from "@/components/AppAlertProvider";
 import { AppProvider } from "@/context/AppContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -19,7 +18,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <AppProvider>
         <AppAlertProvider>
           {children}
-          <Toast position="top" topOffset={56} />
+          <Toaster position="top-right" />
         </AppAlertProvider>
       </AppProvider>
     </LanguageProvider>

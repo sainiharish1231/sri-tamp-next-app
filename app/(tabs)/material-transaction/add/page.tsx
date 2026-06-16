@@ -1,10 +1,8 @@
+import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 "use client";
 
-import React from "react";
-import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import { Stack, useLocalSearchParams, useRouter } from "next/navigation";
+import { MaterialCommunityIcons as Icon } from "lucide-react";
 import { colors } from "@/colors";
 import MaterialTransactionForm from "@/components/MaterialTransactionForm";
 import { useLanguage } from "@/hooks/use-language";

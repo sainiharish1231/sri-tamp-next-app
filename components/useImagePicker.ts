@@ -1,6 +1,5 @@
 // hooks/useImagePicker.ts
 import { useState } from "react";
-import { Alert, Platform, PermissionsAndroid } from "react-native";
 import {
   launchCamera,
   launchImageLibrary,
