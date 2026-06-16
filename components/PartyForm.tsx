@@ -11,6 +11,7 @@ import {
   Platform,
   Keyboard,
   webStyle,
+} from "react-native";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import FloatingInput from "@/components/FloatingInput";

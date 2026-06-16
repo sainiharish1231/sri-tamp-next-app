@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Switch,
   webStyle,
+} from "react-native";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { colors } from "@/colors";

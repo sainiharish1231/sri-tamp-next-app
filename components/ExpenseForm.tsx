@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   webStyle,
+} from "react-native";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import {

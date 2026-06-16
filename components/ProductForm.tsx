@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   webStyle,
+} from "react-native";
 import { Category, Material } from "@/types/product";
 import MaterialService from "@/services/MaterialService";
 import CategoryService from "@/services/CategoryService";

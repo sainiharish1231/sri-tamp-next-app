@@ -5,6 +5,7 @@ import {
   ModalProps,
   Platform,
   StyleSheet,
+} from "react-native";
 
 type KeyboardAwareModalProps = ModalProps & {
   children: ReactNode;
