@@ -1,16 +1,5 @@
-import React, { useRef, useEffect } from "react";
-import {
-  Pressable,
-  Modal,
-  StyleSheet,
-  Animated,
-  ActivityIndicator,
-  webStyle,
-} from "react-native";
-import { Trash2, X } from "lucide-react-native";
-import { getDeviceMetrics } from "@/utils/responsive";
-
-const { isXs: isSmallDevice } = getDeviceMetrics();
+import React, { useState, useEffect } from "react";
+import { Trash2, X } from "lucide-react";
 
 interface DeleteConfirmModalProps {
   visible: boolean;
@@ -31,178 +20,67 @@ export default function DeleteConfirmModal({
   onConfirm,
   onCancel,
 }: DeleteConfirmModalProps) {
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
-  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const [isVisible, setIsVisible] = useState(visible);
 
   useEffect(() => {
-    if (visible) {
-      scaleAnim.setValue(0.8);
-      opacityAnim.setValue(0);
-      Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          useNativeDriver: false,
-          tension: 100,
-          friction: 8,
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    }
-  }, [visible, scaleAnim, opacityAnim]);
+    setIsVisible(visible);
+  }, [visible]);
+
+  if (!isVisible) return null;
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onCancel}
-    >
-      <Pressable style={styles.overlay} onPress={onCancel}>
-        <div
-          style={webStyle([
-            styles.container,
-            { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
-          ])}
-        >
-          <Pressable>
-            <div style={webStyle(styles.iconContainer)}>
-              <div style={webStyle(styles.iconCircle)}>
-                <Trash2 size={28} color="#ef4444" />
-              </div>
-            </div>
-
-            <span style={webStyle(styles.title)}>{title}</span>
-            <span style={webStyle(styles.message)}>{message}</span>
-            {itemName ? (
-              <div style={webStyle(styles.itemNameContainer)}>
-                <span style={webStyle(styles.itemName)}>
-                  {`"${itemName}"`}
-                </span>
-              </div>
-            ) : null}
-
-            <div style={webStyle(styles.buttonRow)}>
-              <Pressable
-                style={[styles.button, styles.cancelButton]}
-                onPress={onCancel}
-                disabled={loading}
-              >
-                <X size={18} color="#64748b" />
-                <span style={webStyle(styles.cancelText)}>Cancel</span>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.button,
-                  styles.deleteButton,
-                  loading && styles.buttonDisabled,
-                ]}
-                onPress={onConfirm}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <>
-                    <Trash2 size={18} color="#fff" />
-                    <span style={webStyle(styles.deleteText)}>Delete</span>
-                  </>
-                )}
-              </Pressable>
-            </div>
-          </Pressable>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-100 opacity-100">
+        {/* Icon Container */}
+        <div className="flex justify-center pt-6">
+          <div className="bg-red-100 p-3 rounded-full">
+            <Trash2 size={28} className="text-red-500" />
+          </div>
         </div>
-      </Pressable>
-    </Modal>
+
+        {/* Content */}
+        <div className="text-center px-6 py-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+          <p className="text-gray-600 text-sm mb-4">{message}</p>
+
+          {itemName && (
+            <div className="bg-gray-50 rounded-lg p-3 mb-6 border border-gray-200">
+              <p className="text-gray-900 font-semibold text-sm">
+                {`"${itemName}"`}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3 px-6 pb-6">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            <X size={18} />
+            <span>Cancel</span>
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Deleting...</span>
+              </>
+            ) : (
+              <>
+                <Trash2 size={18} />
+                <span>Delete</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: isSmallDevice ? 16 : 24,
-  },
-  container: {
-    backgroundColor: "#fff",
-    borderRadius: isSmallDevice ? 14 : 20,
-    padding: isSmallDevice ? 20 : 28,
-    width: "100%",
-    maxWidth: 360,
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-  },
-  iconContainer: {
-    alignItems: "center",
-    marginBottom: isSmallDevice ? 14 : 20,
-  },
-  iconCircle: {
-    width: isSmallDevice ? 52 : 64,
-    height: isSmallDevice ? 52 : 64,
-    borderRadius: isSmallDevice ? 26 : 32,
-    backgroundColor: "#fef2f2",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#fecaca",
-  },
-  title: {
-    fontSize: isSmallDevice ? 18 : 20,
-    fontWeight: "700" as const,
-    color: "#0f172a",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: isSmallDevice ? 14 : 15,
-    color: "#64748b",
-    textAlign: "center",
-    lineHeight: isSmallDevice ? 20 : 22,
-    marginBottom: 12,
-  },
-  itemNameContainer: {
-    backgroundColor: "#f8fafc",
-    borderRadius: 10,
-    padding: isSmallDevice ? 10 : 12,
-    marginBottom: isSmallDevice ? 14 : 20,
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-  },
-  itemName: {
-    fontSize: 15,
-    fontWeight: "600" as const,
-    color: "#0f172a",
-    textAlign: "center",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: isSmallDevice ? 8 : 12,
-    marginTop: 8,
-  },
-  button: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: isSmallDevice ? 11 : 14,
-    borderRadius: isSmallDevice ? 10 : 12,
-    gap: isSmallDevice ? 5 : 8,
-  },
-  cancelButton: {
-    backgroundColor: "#f1f5f9",
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-  },
-  deleteButton: { backgroundColor: "#ef4444" },
-  buttonDisabled: { opacity: 0.6 },
-  cancelText: { fontSize: 15, fontWeight: "600" as const, color: "#64748b" },
-  deleteText: { fontSize: 15, fontWeight: "600" as const, color: "#fff" },
-});

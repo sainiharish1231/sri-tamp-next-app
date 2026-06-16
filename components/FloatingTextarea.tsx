@@ -1,25 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  TextInput,
-  StyleSheet,
-  Animated,
-  TextInputProps,
-  TouchableOpacity,
-  ActivityIndicator,
-  webStyle,
-} from "react-native";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { AlertCircle, CheckCircle, Info, Loader, Wand2 } from "lucide-react";
 import { generateText } from "@rork-ai/toolkit-sdk";
-import { getDeviceMetrics } from "@/utils/responsive";
 
-const { isXs: isSmallDevice } = getDeviceMetrics();
-
-interface FloatingTextareaProps extends TextInputProps {
+interface FloatingTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   required?: boolean;
   error?: string;
   helperText?: string;
-  containerStyle?: any;
+  containerStyle?: string;
   rows?: number;
   enableAIRewrite?: boolean;
   aiRewritePrompt?: string;
@@ -30,49 +18,30 @@ const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
   required = false,
   error,
   helperText,
-  containerStyle,
+  containerStyle = "",
   value,
   placeholder,
   onFocus,
   onBlur,
-  onChangeText,
+  onChange,
   rows = 4,
-  editable = true,
+  disabled = false,
   enableAIRewrite = false,
   aiRewritePrompt,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
-  const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
 
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: value || isFocused ? 1 : 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  }, [value, isFocused]);
-
-  const handleFocus = (e: any) => {
+  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     setIsFocused(true);
     onFocus?.(e);
   };
 
-  const handleBlur = (e: any) => {
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     setIsFocused(false);
     onBlur?.(e);
   };
-
-  const labelTop = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [28, 12],
-  });
-
-  const labelSize = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [16, 12],
-  });
 
   const getLabelColor = () => {
     if (error) return "#EF4444";
@@ -81,10 +50,8 @@ const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
     return "#9CA3AF";
   };
 
-  const minHeight = rows * 24 + 60;
-
   const handleAIRewrite = async () => {
-    if (!value || !value.trim() || isRewriting) return;
+    if (!value || !String(value).trim() || isRewriting) return;
 
     setIsRewriting(true);
     try {
@@ -101,8 +68,10 @@ const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
         ],
       });
 
-      if (rewritten && rewritten.trim()) {
-        onChangeText?.(rewritten.trim());
+      if (rewritten && String(rewritten).trim()) {
+        onChange?.({
+          target: { value: String(rewritten).trim() },
+        } as any);
       }
     } catch (err) {
       console.log("AI rewrite error:", err);
@@ -112,227 +81,101 @@ const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
   };
 
   return (
-    <div style={webStyle([styles.container, containerStyle])}>
+    <div className={containerStyle}>
       <div
-        style={webStyle([
-          styles.textareaContainer,
-          isFocused && styles.textareaContainerFocused,
-          error && styles.textareaContainerError,
-          !editable && styles.textareaContainerDisabled,
-          { minHeight },
-        ])}
+        className={`relative bg-white border-2 rounded-lg p-4 transition-colors ${
+          error
+            ? "border-red-500 bg-red-50"
+            : isFocused
+              ? "border-purple-600 bg-gray-50"
+              : "border-gray-200"
+        } ${disabled ? "bg-gray-100 border-gray-200" : ""}`}
+        style={{ minHeight: `${rows * 28 + 80}px` }}
       >
-        <span
-          style={webStyle([
-            styles.label,
-            {
-              top: labelTop,
-              fontSize: labelSize,
-              color: getLabelColor(),
-            },
-          ])}
+        {/* Floating Label */}
+        <label
+          className={`absolute left-4 px-1 bg-white font-medium transition-all pointer-events-none ${
+            isFocused || value
+              ? "-top-2.5 text-xs"
+              : "top-4 text-base"
+          }`}
+          style={{ color: getLabelColor() }}
         >
           {label}
-          {required && <span style={webStyle(styles.required)}> *</span>}
-        </span>
+          {required && <span className="text-red-500"> *</span>}
+        </label>
 
-        <TextInput
-          style={[
-            styles.textarea,
-            !editable && styles.textareaDisabled,
-            { marginTop: value || isFocused ? 20 : 0 },
-          ]}
+        {/* Textarea */}
+        <textarea
           value={value}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          onChangeText={onChangeText}
-          editable={editable && !isRewriting}
+          onChange={onChange}
+          disabled={disabled || isRewriting}
           placeholder={isFocused || value ? placeholder : ""}
-          placeholderTextColor="#9CA3AF"
-          multiline={true}
-          textAlignVertical="top"
+          rows={rows}
+          className={`w-full bg-transparent text-gray-900 font-medium outline-none resize-none ${
+            disabled ? "text-gray-500" : ""
+          }`}
           {...props}
         />
 
+        {/* Error Icon */}
         {error && (
-          <div style={webStyle(styles.errorIcon)}>
-            <Icon name="alert-circle" size={20} color="#EF4444" />
+          <div className="absolute right-4 top-4 text-red-500">
+            <AlertCircle className="w-5 h-5" />
           </div>
         )}
       </div>
 
-      {enableAIRewrite && value && value.trim().length > 10 && (
-        <TouchableOpacity
-          style={[
-            styles.aiRewriteButton,
-            isRewriting && styles.aiRewriteButtonLoading,
-          ]}
-          onPress={handleAIRewrite}
+      {/* AI Rewrite Button */}
+      {enableAIRewrite && value && String(value).trim().length > 10 && (
+        <button
+          onClick={handleAIRewrite}
           disabled={isRewriting}
-          activeOpacity={0.7}
+          className={`flex items-center justify-center gap-2 mt-2.5 px-4 py-2.5 bg-purple-50 border border-purple-200 rounded-lg text-purple-600 font-semibold transition-colors ${
+            isRewriting ? "opacity-70 cursor-default" : "hover:bg-purple-100"
+          }`}
         >
           {isRewriting ? (
             <>
-              <ActivityIndicator size="small" color="#8B5CF6" />
-              <span style={webStyle(styles.aiRewriteText)}>Rewriting...</span>
+              <Loader className="w-4 h-4 animate-spin" />
+              <span>Rewriting...</span>
             </>
           ) : (
             <>
-              <Icon name="auto-fix" size={18} color="#8B5CF6" />
-              <span style={webStyle(styles.aiRewriteText)}>Rewrite with AI</span>
-              <div style={webStyle(styles.aiBadge)}>
-                <span style={webStyle(styles.aiBadgeText)}>AI</span>
-              </div>
+              <Wand2 className="w-4 h-4" />
+              <span>Rewrite with AI</span>
+              <span className="ml-auto bg-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded">
+                AI
+              </span>
             </>
           )}
-        </TouchableOpacity>
+        </button>
       )}
 
-      <div style={webStyle(styles.bottomContainer)}>
+      {/* Error/Helper Text and Counter */}
+      <div className="flex justify-between items-center mt-1.5 min-h-5">
         {error ? (
-          <div style={webStyle(styles.errorContainer)}>
-            <Icon name="alert-circle" size={14} color="#EF4444" />
-            <span style={webStyle(styles.errorText)}>{error}</span>
+          <div className="flex items-center gap-1.5 flex-1">
+            <AlertCircle className="w-3.5 h-3.5 text-red-500" />
+            <span className="text-xs text-red-500">{error}</span>
           </div>
         ) : helperText ? (
-          <div style={webStyle(styles.helperContainer)}>
-            <Icon name="information-outline" size={14} color="#6B7280" />
-            <span style={webStyle(styles.helperText)}>{helperText}</span>
+          <div className="flex items-center gap-1.5 flex-1">
+            <Info className="w-3.5 h-3.5 text-gray-600" />
+            <span className="text-xs text-gray-600">{helperText}</span>
           </div>
         ) : null}
 
         {props.maxLength && value && (
-          <span style={webStyle(styles.counterText)}>
-            {value.length}/{props.maxLength}
+          <span className="text-xs text-gray-600 ml-2">
+            {String(value).length}/{props.maxLength}
           </span>
         )}
       </div>
     </div>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
-  textareaContainer: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    minHeight: 140,
-    position: "relative" as const,
-  },
-  textareaContainerFocused: {
-    borderColor: "#8B5CF6",
-    borderWidth: 2,
-    backgroundColor: "#F9FAFB",
-  },
-  textareaContainerError: {
-    borderColor: "#EF4444",
-    backgroundColor: "#FEF2F2",
-  },
-  textareaContainerDisabled: {
-    backgroundColor: "#F3F4F6",
-    borderColor: "#E5E7EB",
-  },
-  label: {
-    position: "absolute" as const,
-    left: isSmallDevice ? 12 : 16,
-    fontWeight: "500" as const,
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 4,
-    zIndex: 1,
-  },
-  required: {
-    color: "#EF4444",
-  },
-  textarea: {
-    fontSize: isSmallDevice ? 14 : 16,
-    color: "#1F2937",
-    fontWeight: "500" as const,
-    paddingTop: isSmallDevice ? 6 : 8,
-    paddingBottom: 4,
-    lineHeight: isSmallDevice ? 20 : 22,
-    minHeight: isSmallDevice ? 84 : 100,
-  },
-  textareaDisabled: {
-    color: "#9CA3AF",
-  },
-  errorIcon: {
-    position: "absolute" as const,
-    right: isSmallDevice ? 12 : 16,
-    top: isSmallDevice ? 14 : 16,
-  },
-  aiRewriteButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: isSmallDevice ? 6 : 8,
-    marginTop: isSmallDevice ? 8 : 10,
-    paddingVertical: isSmallDevice ? 10 : 12,
-    paddingHorizontal: isSmallDevice ? 12 : 16,
-    backgroundColor: "#F5F3FF",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#DDD6FE",
-  },
-  aiRewriteButtonLoading: {
-    opacity: 0.7,
-  },
-  aiRewriteText: {
-    fontSize: isSmallDevice ? 13 : 14,
-    fontWeight: "600" as const,
-    color: "#8B5CF6",
-  },
-  aiBadge: {
-    backgroundColor: "#8B5CF6",
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  aiBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "700" as const,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 6,
-    minHeight: 20,
-  },
-  errorContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    flex: 1,
-  },
-  errorText: {
-    fontSize: 12,
-    color: "#EF4444",
-    flex: 1,
-  },
-  helperContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    flex: 1,
-  },
-  helperText: {
-    fontSize: 12,
-    color: "#6B7280",
-    flex: 1,
-  },
-  counterText: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginLeft: 8,
-  },
-});
 
 export default FloatingTextarea;
