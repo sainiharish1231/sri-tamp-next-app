@@ -10,7 +10,7 @@ import {
   webStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useLocalSearchParams, Stack } from "expo-router";
+import { useRouter, useLocalSearchParams, Stack } from "next/navigation";
 import UserService from "@/services/UserService";
 import CountriesService from "@/services/CountriesService";
 import PartyService from "@/services/PartyService";

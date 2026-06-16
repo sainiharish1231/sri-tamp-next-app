@@ -10,7 +10,7 @@ import { extractPartyId,
 import { LinearGradient } from "expo-linear-gradient";
 import { Href,
   useFocusEffect,
-  useRouter } from "expo-router";
+  useRouter } from "next/navigation";
 import {
   Activity,
   Box,

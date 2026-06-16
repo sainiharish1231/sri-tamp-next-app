@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import {
   Redirect,
-  useRouter } from "expo-router";
+  useRouter } from "next/navigation";
 import {
   ActivityIndicator,
   Image,

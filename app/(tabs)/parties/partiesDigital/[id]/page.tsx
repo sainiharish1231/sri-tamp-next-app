@@ -19,7 +19,7 @@ import {
   Animated,
   webStyle,
 } from "react-native";
-import { useFocusEffect, useRouter, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useRouter, useLocalSearchParams } from "next/navigation";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/colors";
 import { format } from "date-fns";

@@ -14,8 +14,8 @@ import {
   webStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useFocusEffect } from "expo-router";
+import { useRouter } from "next/navigation";
+import { useFocusEffect } from "next/navigation";
 import PartyService from "@/services/PartyService";
 import { Party } from "@/types/party";
 import { colors } from "@/colors";

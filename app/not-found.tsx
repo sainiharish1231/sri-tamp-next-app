@@ -1,7 +1,5 @@
 "use client";
 
-import { Link, Stack } from "expo-router";
-import { StyleSheet, webStyle } from "react-native";
 import { AlertCircle } from "lucide-react-native";
 import { colors } from "@/colors";
 

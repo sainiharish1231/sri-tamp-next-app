@@ -9,7 +9,7 @@ import {
   webStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter } from "next/navigation";
 import PartyService from "@/services/PartyService";
 import CountriesService from "@/services/CountriesService";
 import { colors } from "@/colors";

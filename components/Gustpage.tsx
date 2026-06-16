@@ -1,8 +1,5 @@
 import { useLanguage } from "@/hooks/use-language";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
 import React, { useState, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
@@ -18,7 +15,6 @@ import {
   Image,
   RefreshControl,
   webStyle,
-} from "react-native";
 import Toast from "react-native-toast-message";
 import ProductService from "@/services/ProductService";
 

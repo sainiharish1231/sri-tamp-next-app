@@ -7,7 +7,7 @@ import AuthService from "@/services/AuthService";
 import { useAuthStore } from "@/store/auth.store";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   ActivityIndicator,

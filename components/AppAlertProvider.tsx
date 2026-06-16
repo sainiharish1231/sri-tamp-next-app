@@ -1,6 +1,5 @@
 import { colors } from "@/colors";
 import { useLanguage } from "@/hooks/use-language";
-import { Ionicons } from "@expo/vector-icons";
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -12,7 +11,6 @@ import {
   ScrollView,
   StyleSheet,
   webStyle,
-} from "react-native";
 import { getDeviceMetrics } from "@/utils/responsive";
 
 type AlertState = {

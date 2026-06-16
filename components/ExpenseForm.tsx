@@ -10,8 +10,6 @@ import {
   TextInput,
   TouchableOpacity,
   webStyle,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import {

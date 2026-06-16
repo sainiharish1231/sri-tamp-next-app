@@ -18,9 +18,6 @@ import {
   Animated,
   Switch,
   webStyle,
-} from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ArrowDownLeft,
@@ -29,8 +26,6 @@ import {
   RotateCw,
   Check,
 } from "lucide-react-native";
-import * as Print from "expo-print";
-import * as Sharing from "expo-sharing";
 import PartyService from "@/services/PartyService";
 import ProductService from "@/services/ProductService";
 import MaterialService from "@/services/MaterialService";

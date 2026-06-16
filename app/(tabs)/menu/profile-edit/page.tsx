@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   webStyle,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "next/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ArrowLeft,

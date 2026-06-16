@@ -32,7 +32,7 @@ import {
   XCircle,
   Trash2,
 } from "lucide-react-native";
-import { useRouter } from "expo-router";
+import { useRouter } from "next/navigation";
 import { colors } from "@/colors";
 import EnquiryService from "@/services/EnquiryService";
 import { EnquiryTypes } from "@/types/enquiry.types";

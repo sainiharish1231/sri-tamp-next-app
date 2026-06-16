@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   webStyle,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter } from "next/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import {

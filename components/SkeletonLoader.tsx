@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, ViewStyle, webStyle } from "react-native";
 import { colors } from "@/colors";
 import { getDeviceMetrics } from "@/utils/responsive";
 
