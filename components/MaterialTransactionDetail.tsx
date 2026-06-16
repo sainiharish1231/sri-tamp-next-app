@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   webStyle,
 } from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format } from "date-fns";
 import {

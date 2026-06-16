@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, Alert, webStyle } from "react-native";
-import { useRouter, Stack } from "next/navigation";
+import { useRouter, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
 import { colors } from "@/colors";

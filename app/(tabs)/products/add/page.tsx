@@ -2,7 +2,7 @@
 
 import React from "react";
 import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { router, Stack } from "next/navigation";
+import { router, Stack } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import ProductForm from "@/components/ProductForm";
 import { SafeAreaView } from "react-native-safe-area-context";

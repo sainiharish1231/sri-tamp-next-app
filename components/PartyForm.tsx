@@ -12,6 +12,7 @@ import {
   Keyboard,
   webStyle,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import FloatingInput from "@/components/FloatingInput";
@@ -19,6 +20,7 @@ import FloatingTextarea from "@/components/FloatingTextarea";
 import PartyService from "@/services/PartyService";
 import CountriesService from "@/services/CountriesService";
 import { Country } from "@/types/country.types";
+import { useRouter } from "expo-router";
 import Toast from "@/utils/Toast";
 
 interface PartyFormData {

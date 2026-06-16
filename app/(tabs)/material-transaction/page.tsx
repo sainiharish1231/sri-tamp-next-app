@@ -18,8 +18,8 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "next/navigation";
-import { useFocusEffect } from "next/navigation";
+import { useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { Box, Package, Plus, Search, X } from "lucide-react-native";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";

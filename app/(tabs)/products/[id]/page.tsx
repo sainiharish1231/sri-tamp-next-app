@@ -11,7 +11,7 @@ import {
   Platform,
   webStyle,
 } from "react-native";
-import { useLocalSearchParams, useRouter, Stack } from "next/navigation";
+import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import {
   Share2,
   MessageCircle,

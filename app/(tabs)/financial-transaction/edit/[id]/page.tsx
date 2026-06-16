@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, TouchableOpacity, webStyle } from "react-native";
-import { Stack, useLocalSearchParams, useRouter } from "next/navigation";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
 import { colors } from "@/colors";

@@ -2,6 +2,7 @@ import type { PropsWithChildren, ReactElement } from 'react';
 import {
   StyleSheet,
   webStyle,
+} from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,

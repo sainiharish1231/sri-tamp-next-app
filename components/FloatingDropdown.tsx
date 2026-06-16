@@ -10,6 +10,8 @@ import {
   NativeSyntheticEvent,
   Alert,
   webStyle,
+} from "react-native";
+import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import { getDeviceMetrics } from "@/utils/responsive";

@@ -18,7 +18,7 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "next/navigation";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { format } from "date-fns";
 import {
   ArrowLeft,

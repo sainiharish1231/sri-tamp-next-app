@@ -6,7 +6,10 @@ import {
   ActivityIndicator,
   Platform,
   webStyle,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import {
   ChevronLeft,
   ArrowDownCircle,

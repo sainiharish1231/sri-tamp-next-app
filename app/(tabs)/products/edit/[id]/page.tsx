@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, ActivityIndicator, webStyle } from "react-native";
-import { router, useLocalSearchParams, Stack } from "next/navigation";
+import { router, useLocalSearchParams, Stack } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import ProductForm from "@/components/ProductForm";
 import ProductService from "@/services/ProductService";

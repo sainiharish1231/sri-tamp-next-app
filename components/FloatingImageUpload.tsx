@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   webStyle,
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import useImagePicker from "./useImagePicker";
 import { getDeviceMetrics } from "@/utils/responsive";
