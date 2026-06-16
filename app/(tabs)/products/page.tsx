@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import {
-  FlatList,
-  TextInput,
-  StyleSheet,
-  Pressable,
-  RefreshControl,
-  ActivityIndicator,
-  Platform,
-  webStyle,
-} from "react-native";
-import { router } from "expo-router";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Search,
@@ -21,21 +11,17 @@ import {
   Layers,
   X,
   RefreshCw,
-} from "lucide-react-native";
+  Loader,
+} from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductService from "@/services/ProductService";
 import CategoriesModal from "@/components/CategoriesPage";
 import MaterialsModal from "@/components/MaterialsPage";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import { useAuthStore } from "@/store/auth.store";
-import { colors } from "@/colors";
 import Toast from "@/utils/Toast";
 import { Product } from "@/types/product";
-import { getDeviceMetrics } from "@/utils/responsive";
 import { extractCountPayload, extractPagePayload } from "@/utils/response";
-
-const { isXs: isSmallDevice, isMd: isTablet } = getDeviceMetrics();
 
 const getProductIdentity = (product: Product, index: number) =>
   String(
@@ -58,6 +44,7 @@ const uniqueProducts = (items: Product[]) => {
 };
 
 export default function Products() {
+  const router = useRouter();
   const { session } = useAuthStore();
   const user = session?.user || null;
   const [products, setProducts] = useState<Product[]>([]);
@@ -82,9 +69,7 @@ export default function Products() {
   const [deleting, setDeleting] = useState(false);
 
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const flatListRef = useRef<FlatList>(null);
-
-  const pageSize = isTablet ? 10 : isSmallDevice ? 8 : 10;
+  const pageSize = 12;
 
   const isAdmin = user?.role === "admin";
   const isInternalUser = user?.role === "internal_user";
@@ -266,223 +251,206 @@ export default function Products() {
     }
   };
 
-  const renderProductItem = ({
-    item,
-    index,
-  }: {
-    item: Product;
-    index: number;
-  }) => {
-    return (
-      <div style={webStyle(viewMode === "grid" ? styles.gridItem : styles.listItem)}>
-        <ProductCard
-          item={item}
-          viewMode={viewMode}
-          onView={() => router.push(`/products/${item.id}`)}
-          onEdit={() => router.push(`/products/edit/${item.id}`)}
-          onDelete={() => openDeleteModal(item.id, item.name)}
-          showActions={canEdit}
-          showEnquiry={canEnquiry}
-          onEnquiry={() => {
-            Toast.show({
-              type: "info",
-              text1: "Enquiry",
-              text2: `Enquiry for ${item.name}`,
-            });
-          }}
-        />
-      </div>
-    );
-  };
-
-  const ListFooter = () => {
-    if (searchMode || !hasMore || products.length === 0) return null;
-
-    return (
-      <div style={webStyle(styles.footerLoader)}>
-        {loadingMore ? (
-          <>
-            <ActivityIndicator size="small" color={colors.primary} />
-            <span style={webStyle(styles.loadingMoreText)}>Loading more...</span>
-          </>
-        ) : null}
-      </div>
-    );
+  const handleLoadMore = () => {
+    if (hasMore && !loadingMore && !loading && !searchMode) {
+      fetchProducts(true);
+    }
   };
 
   return (
-    <div style={webStyle(styles.container)}>
-      <div style={webStyle(styles.header)}>
-        <div style={webStyle(styles.headerTop)}>
-          <div style={webStyle(styles.headerTitleContainer)}>
-            <div style={webStyle(styles.headerText)}>
-              <span style={webStyle(styles.headerTitle)}>Products</span>
-              <span style={webStyle(styles.headerSubtitle)}>
-                {canEdit ? "Manage your inventory" : "Browse products"}
-              </span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-b-3xl shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">Products</h1>
+              <p className="text-purple-100 mt-1">
+                {canEdit ? "Manage your inventory" : "Browse our catalog"}
+              </p>
             </div>
-          </div>
-
-          <div style={webStyle(styles.headerRight)}>
-            <Pressable
-              style={styles.refreshButton}
-              onPress={onRefresh}
+            <button
+              onClick={onRefresh}
               disabled={refreshing || loading}
+              className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors disabled:opacity-50"
             >
               {refreshing ? (
-                <ActivityIndicator size="small" color="white" />
+                <Loader className="w-6 h-6 animate-spin" />
               ) : (
-                <RefreshCw
-                  size={isTablet ? 24 : isSmallDevice ? 18 : 20}
-                  color="white"
-                />
+                <RefreshCw className="w-6 h-6" />
               )}
-            </Pressable>
+            </button>
           </div>
         </div>
       </div>
 
-      <div style={webStyle(styles.searchContainer)}>
-        <Search size={20} color="#64748b" style={styles.searchIcon} />
-        <TextInput
-          placeholder="Search products..."
-          placeholderTextColor="#94a3b8"
-          value={searchTerm}
-          onChangeText={handleSearchChange}
-          style={styles.searchInput}
-          returnKeyType="search"
-        />
-        {searchTerm.length > 0 ? (
-          <Pressable
-            onPress={handleClearSearch}
-            style={styles.clearSearchButton}
-          >
-            <X size={20} color="#64748b" />
-          </Pressable>
-        ) : null}
-      </div>
-
-      <div style={webStyle(styles.toolbarRow)}>
-        <div style={webStyle(styles.toolbarLeft)}>
-          {canEdit ? (
-            <>
-              <Pressable
-                style={styles.headerButton}
-                onPress={() => setShowCategories(true)}
-              >
-                <Folder size={18} color={colors.primary} />
-                <span style={webStyle(styles.headerButtonText)}>Categories</span>
-              </Pressable>
-              <Pressable
-                style={styles.headerButton}
-                onPress={() => setShowMaterials(true)}
-              >
-                <Layers size={18} color={colors.primary} />
-                <span style={webStyle(styles.headerButtonText)}>Materials</span>
-              </Pressable>
-            </>
-          ) : null}
-        </div>
-        <div style={webStyle(styles.headerButtons)}>
-          <Pressable
-            style={[
-              styles.toggleButton,
-              viewMode === "grid" && styles.toggleActive,
-            ]}
-            onPress={() => setViewMode("grid")}
-          >
-            <Grid3x3
-              size={18}
-              color={viewMode === "grid" ? "#fff" : "#64748b"}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
             />
-          </Pressable>
-          <Pressable
-            style={[
-              styles.toggleButton,
-              viewMode === "list" && styles.toggleActive,
-            ]}
-            onPress={() => setViewMode("list")}
-          >
-            <List size={18} color={viewMode === "list" ? "#fff" : "#64748b"} />
-          </Pressable>
-        </div>
-      </div>
-
-      <div style={webStyle(styles.statsRow)}>
-        <div style={webStyle(styles.statsContainer)}>
-          <div style={webStyle(styles.statCard)}>
-            <span style={webStyle(styles.statLabel)}>Total Products</span>
-            <span style={webStyle(styles.statValue)}>{totalCount}</span>
-          </div>
-          <div style={webStyle(styles.statCard)}>
-            <span style={webStyle(styles.statLabel)}>Showing</span>
-            <span style={webStyle(styles.statValue)}>{products.length}</span>
+            {searchTerm && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
-      </div>
 
-      {loading && !refreshing ? (
-        <div style={webStyle(styles.centerLoader)}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <span style={webStyle(styles.loadingText)}>Loading products...</span>
-        </div>
-      ) : (
-        <FlatList
-          ref={flatListRef}
-          data={products}
-          numColumns={viewMode === "grid" ? 2 : 1}
-          key={viewMode}
-          keyExtractor={(item, index) => getProductIdentity(item, index)}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[colors.primary]}
-              tintColor={colors.primary}
-            />
-          }
-          renderItem={renderProductItem}
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={ListFooter}
-          ListEmptyComponent={
-            <div style={webStyle(styles.emptyContainer)}>
-              <span style={webStyle(styles.emptyText)}>
-                {searchMode ? "No products found" : "No products yet"}
-              </span>
-              <span style={webStyle(styles.emptySubtext)}>
-                {searchMode
-                  ? "Try adjusting your search"
-                  : canEdit
-                    ? "Add your first product"
-                    : "Products will appear here"}
-              </span>
-              {canEdit ? (
-                <Pressable
-                  style={styles.emptyButton}
-                  onPress={() => router.push("/products/add")}
+        {/* Toolbar */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex gap-3">
+            {canEdit && (
+              <>
+                <button
+                  onClick={() => setShowCategories(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-purple-600 font-medium transition-colors"
                 >
-                  <Plus size={20} color="#fff" />
-                  <span style={webStyle(styles.emptyButtonText)}>Add New Product</span>
-                </Pressable>
-              ) : null}
-            </div>
-          }
-        />
-      )}
+                  <Folder className="w-5 h-5" />
+                  Categories
+                </button>
+                <button
+                  onClick={() => setShowMaterials(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-purple-600 font-medium transition-colors"
+                >
+                  <Layers className="w-5 h-5" />
+                  Materials
+                </button>
+              </>
+            )}
+          </div>
 
-      {canEdit ? (
-        <div style={webStyle(styles.fabContainer)}>
-          <Pressable
-            style={styles.fab}
-            onPress={() => router.push("/products/add")}
-          >
-            <Plus size={24} color="#fff" />
-          </Pressable>
+          {/* View Mode Toggle */}
+          <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded transition-colors ${
+                viewMode === "grid"
+                  ? "bg-purple-600 text-white"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              <Grid3x3 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded transition-colors ${
+                viewMode === "list"
+                  ? "bg-purple-600 text-white"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              <List className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      ) : null}
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+            <p className="text-gray-600 text-sm font-medium">Total Products</p>
+            <p className="text-3xl font-bold text-purple-600 mt-1">{totalCount}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+            <p className="text-gray-600 text-sm font-medium">Showing</p>
+            <p className="text-3xl font-bold text-purple-600 mt-1">{products.length}</p>
+          </div>
+        </div>
+
+        {/* Products Grid/List */}
+        {loading && !refreshing ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader className="w-10 h-10 text-purple-600 animate-spin mb-4" />
+            <p className="text-gray-600 font-medium">Loading products...</p>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-16">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {searchMode ? "No products found" : "No products yet"}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {searchMode
+                ? "Try adjusting your search"
+                : canEdit
+                  ? "Add your first product"
+                  : "Products will appear here"}
+            </p>
+            {canEdit && (
+              <button
+                onClick={() => router.push("/products/add")}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+                Add New Product
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+                  : "space-y-4 mb-8"
+              }
+            >
+              {products.map((product, index) => (
+                <ProductCard
+                  key={getProductIdentity(product, index)}
+                  item={product}
+                  viewMode={viewMode}
+                  onView={() => router.push(`/products/${product.id}`)}
+                  onEdit={() => router.push(`/products/edit/${product.id}`)}
+                  onDelete={() => openDeleteModal(product.id, product.name)}
+                  showActions={canEdit}
+                  showEnquiry={canEnquiry}
+                  onEnquiry={() => {
+                    Toast.show({
+                      type: "info",
+                      text1: "Enquiry",
+                      text2: `Enquiry for ${product.name}`,
+                    });
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Load More */}
+            {!searchMode && hasMore && products.length > 0 && (
+              <div className="text-center py-8">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  {loadingMore && <Loader className="w-5 h-5 animate-spin" />}
+                  Load More Products
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* FAB for Add Product */}
+      {canEdit && (
+        <button
+          onClick={() => router.push("/products/add")}
+          className="fixed bottom-8 right-8 p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors hover:shadow-xl"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
 
       <DeleteConfirmModal
         visible={deleteModalVisible}
@@ -496,264 +464,21 @@ export default function Products() {
         }}
       />
 
-      <KeyboardAwareModal
-        visible={showCategories}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowCategories(false)}
-      >
-        <CategoriesModal onClose={() => setShowCategories(false)} />
-      </KeyboardAwareModal>
+      {showCategories && (
+        <div className="fixed inset-0 bg-black/50 flex items-end z-50">
+          <div className="w-full bg-white rounded-t-xl max-h-[80vh] overflow-y-auto">
+            <CategoriesModal onClose={() => setShowCategories(false)} />
+          </div>
+        </div>
+      )}
 
-      <KeyboardAwareModal
-        visible={showMaterials}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowMaterials(false)}
-      >
-        <MaterialsModal onClose={() => setShowMaterials(false)} />
-      </KeyboardAwareModal>
+      {showMaterials && (
+        <div className="fixed inset-0 bg-black/50 flex items-end z-50">
+          <div className="w-full bg-white rounded-t-xl max-h-[80vh] overflow-y-auto">
+            <MaterialsModal onClose={() => setShowMaterials(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    paddingHorizontal: isTablet ? 24 : isSmallDevice ? 12 : 20,
-    paddingTop: isTablet ? 40 : isSmallDevice ? 34 : 36,
-    paddingBottom: isTablet ? 20 : isSmallDevice ? 12 : 16,
-    backgroundColor: colors.primary,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  headerTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerTitleContainer: { flexDirection: "row", alignItems: "center", flex: 1 },
-  headerText: { flex: 1 },
-  headerTitle: {
-    fontSize: isTablet ? 28 : isSmallDevice ? 20 : 24,
-    fontWeight: "800" as const,
-    color: "white",
-    letterSpacing: 0.5,
-  },
-  headerSubtitle: {
-    fontSize: isTablet ? 16 : isSmallDevice ? 12 : 14,
-    color: "white",
-    opacity: 0.9,
-    marginTop: 2,
-  },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  roleBadge: {
-    backgroundColor: "rgba(255,255,255,0.25)",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  roleBadgeText: {
-    color: "white",
-    fontSize: 10,
-    fontWeight: "700" as const,
-    letterSpacing: 0.5,
-  },
-  refreshButton: {
-    padding: isTablet ? 12 : isSmallDevice ? 8 : 10,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
-  headerButtons: {
-    flexDirection: "row",
-    borderRadius: 10,
-    backgroundColor: "#f1f5f9",
-    gap: 8,
-  },
-  headerButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.gray100,
-    paddingHorizontal: isTablet ? 16 : isSmallDevice ? 10 : 12,
-    paddingVertical: isTablet ? 10 : isSmallDevice ? 6 : 8,
-    borderRadius: 8,
-    gap: 5,
-  },
-  headerButtonText: {
-    fontSize: 13,
-    fontWeight: "600" as const,
-    color: colors.primary,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    marginHorizontal: isTablet ? 24 : isSmallDevice ? 10 : 20,
-    marginVertical: isTablet ? 20 : isSmallDevice ? 10 : 16,
-    paddingHorizontal: isSmallDevice ? 12 : 16,
-    borderRadius: isSmallDevice ? 12 : 16,
-    borderWidth: 1.5,
-    borderColor: "#8b5cf640",
-    height: isTablet ? 56 : isSmallDevice ? 40 : 52,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-  },
-  searchIcon: { marginRight: 12 },
-  searchInput: {
-    flex: 1,
-    fontSize: isTablet ? 18 : isSmallDevice ? 14 : 16,
-    color: "#0f172a",
-    fontWeight: "500" as const,
-    height: "100%",
-  },
-  clearSearchButton: { padding: 4 },
-  toolbarRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: isTablet ? 24 : isSmallDevice ? 10 : 20,
-    marginBottom: isSmallDevice ? 8 : 12,
-    gap: 8,
-  },
-  toolbarLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    flex: 1,
-  },
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: isTablet ? 24 : isSmallDevice ? 10 : 20,
-    marginBottom: isTablet ? 20 : isSmallDevice ? 10 : 16,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: isTablet ? 16 : isSmallDevice ? 6 : 12,
-    flex: 1,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: "#8b5cf608",
-    borderRadius: isTablet ? 16 : 12,
-    padding: isTablet ? 16 : isSmallDevice ? 8 : 14,
-    borderWidth: 1,
-    borderColor: "#8b5cf620",
-    alignItems: "center",
-  },
-  statLabel: {
-    fontSize: isTablet ? 14 : isSmallDevice ? 10 : 12,
-    color: "#64748b",
-    fontWeight: "600" as const,
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: isTablet ? 24 : isSmallDevice ? 18 : 22,
-    fontWeight: "800" as const,
-    color: colors.primary,
-  },
-  toggleButton: {
-    paddingHorizontal: isTablet ? 20 : isSmallDevice ? 14 : 16,
-    paddingVertical: isTablet ? 12 : isSmallDevice ? 8 : 10,
-    borderRadius: 8,
-  },
-  toggleActive: { backgroundColor: colors.primary },
-  centerLoader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 60,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: "#64748b",
-    fontWeight: "600" as const,
-  },
-  listContainer: {
-    paddingHorizontal: isTablet ? 16 : isSmallDevice ? 8 : 12,
-    paddingBottom: isSmallDevice ? 84 : 100,
-  },
-  gridItem: { flex: 0.5, padding: isSmallDevice ? 4 : 6 },
-  listItem: { marginBottom: isSmallDevice ? 8 : 12 },
-  emptyContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: isTablet ? 80 : isSmallDevice ? 42 : 70,
-    backgroundColor: "#fff",
-    borderRadius: isTablet ? 20 : 16,
-    marginTop: isTablet ? 40 : isSmallDevice ? 14 : 30,
-    borderWidth: 2,
-    borderColor: "#8b5cf620",
-    borderStyle: "dashed",
-  },
-  emptyText: {
-    fontSize: isTablet ? 24 : isSmallDevice ? 18 : 22,
-    fontWeight: "700" as const,
-    color: "#0f172a",
-    marginTop: isTablet ? 24 : isSmallDevice ? 16 : 20,
-  },
-  emptySubtext: {
-    fontSize: isTablet ? 18 : isSmallDevice ? 14 : 16,
-    color: "#64748b",
-    marginTop: isTablet ? 8 : isSmallDevice ? 6 : 7,
-    opacity: 0.8,
-  },
-  emptyButton: {
-    marginTop: isTablet ? 32 : isSmallDevice ? 20 : 24,
-    backgroundColor: colors.primary,
-    paddingHorizontal: isTablet ? 32 : isSmallDevice ? 20 : 24,
-    paddingVertical: isTablet ? 18 : isSmallDevice ? 14 : 16,
-    borderRadius: isTablet ? 16 : 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: isTablet ? 10 : isSmallDevice ? 6 : 8,
-  },
-  emptyButtonText: {
-    color: "white",
-    fontSize: isTablet ? 18 : isSmallDevice ? 14 : 16,
-    fontWeight: "700" as const,
-  },
-  footerLoader: {
-    padding: isTablet ? 28 : isSmallDevice ? 16 : 20,
-    alignItems: "center",
-  },
-  loadingMoreText: {
-    fontSize: isTablet ? 16 : isSmallDevice ? 12 : 14,
-    color: "#64748b",
-    marginTop: 12,
-  },
-  fabContainer: {
-    position: "absolute",
-    right: isSmallDevice ? 14 : 20,
-    bottom: isSmallDevice ? 22 : 30,
-    alignItems: "center",
-  },
-  fab: {
-    width: isSmallDevice ? 52 : 60,
-    height: isSmallDevice ? 52 : 60,
-    borderRadius: isSmallDevice ? 26 : 30,
-    backgroundColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 8,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-  },
-});
