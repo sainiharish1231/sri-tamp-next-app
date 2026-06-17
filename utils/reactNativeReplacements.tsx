@@ -24,7 +24,7 @@ export const TouchableOpacity: React.FC<any> = ({ children, onPress, style, disa
   </button>
 );
 
-export const TextInput: React.FC<any> = React.forwardRef(({ style, ...props }, ref) => (
+export const TextInput: React.FC<any> = React.forwardRef<HTMLInputElement, any>(({ style, ...props }, ref) => (
   <input ref={ref} style={style as React.CSSProperties} {...props} />
 ));
 

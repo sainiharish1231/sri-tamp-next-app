@@ -24,10 +24,10 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
           size={18}
           weight="medium"
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
-          style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
+          style={{ transform: `rotate(${isOpen ? '90deg' : '0deg'})` }}
         />
 
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+        <ThemedText type="subtitle" style={{ fontWeight: "600" }}>{title}</ThemedText>
       </TouchableOpacity>
       {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
     </ThemedView>
