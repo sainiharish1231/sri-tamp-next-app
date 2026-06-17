@@ -21,7 +21,6 @@ import CategoriesModal from "@/components/CategoriesPage";
 import MaterialsModal from "@/components/MaterialsPage";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { useAuthStore } from "@/store/auth.store";
-import Toast from "@/utils/Toast";
 import { Product } from "@/types/product";
 import { extractCountPayload, extractPagePayload } from "@/utils/response";
 

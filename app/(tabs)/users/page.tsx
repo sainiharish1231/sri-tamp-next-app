@@ -18,7 +18,6 @@ import UserService from "@/services/UserService";
 import CountriesService from "@/services/CountriesService";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { colors } from "@/colors";
-import Toast from "@/utils/Toast";
 import RestoreConfirmModal from "@/components/RestoreConfirmModal";
 import { getDeviceMetrics } from "@/utils/responsive";
 import { extractArrayPayload, extractPagePayload } from "@/utils/response";

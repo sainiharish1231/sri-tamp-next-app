@@ -838,9 +838,6 @@ export default function Gustpage() {
         </ScrollView>
       </LinearGradient>
 
-      {renderInquiryModal()}
-
-      <Toast />
-    </>
+      {renderInquiryModal()}    </>
   );
 }

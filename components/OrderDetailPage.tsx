@@ -395,9 +395,7 @@ export default function OrderDetailPage() {
           >
             <span style={webStyle(styles.errorBtnText)}>{t("go_back")}</span>
           </TouchableOpacity>
-        </div>
-        <Toast />
-      </SafeAreaView>
+        </div>      </SafeAreaView>
     );
   }
 
@@ -884,10 +882,7 @@ export default function OrderDetailPage() {
         )}
 
         <div style={webStyle({ height: 120 })} />
-      </ScrollView>
-
-      <Toast />
-    </SafeAreaView>
+      </ScrollView>    </SafeAreaView>
   );
 }
 

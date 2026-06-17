@@ -2,6 +2,7 @@
 
 import { colors } from "@/colors";
 import { Toast } from "@/utils/toast";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { useRouter } from "next/navigation";
 
@@ -869,8 +870,6 @@ export default function LoginScreen() {
           </ScrollView>
         </div>
       </KeyboardAwareModal>
-
-      <Toast />
     </div>
   );
 }

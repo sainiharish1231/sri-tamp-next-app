@@ -17,7 +17,6 @@ import CountriesService from "@/services/CountriesService";
 import PartyService from "@/services/PartyService";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { colors } from "@/colors";
-import Toast from "@/utils/Toast";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getDeviceMetrics } from "@/utils/responsive";
 import { extractArrayPayload, extractEntityPayload } from "@/utils/response";

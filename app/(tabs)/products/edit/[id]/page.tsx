@@ -10,7 +10,6 @@ import { ChevronLeft } from "lucide-react";
 import ProductForm from "@/components/ProductForm";
 import ProductService from "@/services/ProductService";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "@/utils/Toast";
 
 export default function EditProductScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

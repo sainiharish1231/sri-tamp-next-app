@@ -17,9 +17,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <LanguageProvider>
       <AppProvider>
         <AppAlertProvider>
-          {children}
-          <Toast position="top" topOffset={56} />
-        </AppAlertProvider>
+          {children}        </AppAlertProvider>
       </AppProvider>
     </LanguageProvider>
   );
