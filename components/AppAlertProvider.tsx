@@ -1,6 +1,7 @@
 "use client";
 
-
+import { colors } from "@/colors";
+import { useLanguage } from "@/hooks/use-language";
 import { AlertCircle, CheckCircle, Info, XCircle } from "lucide-react";
 
 type AlertButton = {

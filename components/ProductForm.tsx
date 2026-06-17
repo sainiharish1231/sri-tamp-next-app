@@ -3,5 +3,5 @@
 import { ActivityIndicator, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated, Alert, Pressable, FlatList, TouchableWithoutFeedback, Keyboard, Modal, webStyle } from "@/utils/reactNativeReplacements";
 
 export default function ProductForm() {
-  return <div>Product Form</div>;
+  return <div>ProductForm</div>;
 }

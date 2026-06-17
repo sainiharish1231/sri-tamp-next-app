@@ -1,6 +1,6 @@
 "use client";
 
-
+import { colors } from "@/colors";
 import { getDeviceMetrics } from "@/utils/responsive";
 
 type SkeletonLoaderProps = {

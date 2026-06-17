@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Trash2, X } from "lucide-react";
 
 interface DeleteConfirmModalProps {

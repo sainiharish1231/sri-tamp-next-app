@@ -1,5 +1,4 @@
-"use client";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function SectionLayout({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
-
 import { X, Plus, Trash2, Edit, Search, CheckCircle, AlertCircle, Loader } from "lucide-react";
+import CategoryService from "@/services/CategoryService";
 
 interface CategoriesModalProps {
   onClose: () => void;

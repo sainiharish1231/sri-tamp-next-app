@@ -1,7 +1,6 @@
 "use client";
 
 
-
 export function HelloWave() {
   return (
     <span

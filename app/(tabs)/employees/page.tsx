@@ -1,5 +1,5 @@
 "use client";
 
 export default function Page() {
-  return <div className="p-8"><h1>Page Content</h1></div>;
+  return <div className="p-8"><h1>employees Page</h1></div>;
 }
