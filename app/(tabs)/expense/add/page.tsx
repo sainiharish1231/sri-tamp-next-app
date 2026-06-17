@@ -2,9 +2,8 @@
 
 import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, Alert, webStyle } from "react-native";
-import { useRouter, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react";
 import { colors } from "@/colors";
 import { CreateExpenseDto } from "@/types/expense.types";
 import expenseService from "@/services/ExpenseService";

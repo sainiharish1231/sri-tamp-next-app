@@ -18,7 +18,8 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import { format } from "date-fns";
 import {
   ArrowLeft,
@@ -31,7 +32,7 @@ import {
   RefreshCw,
   XCircle,
   History,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import EnquiryService from "@/services/EnquiryService";
 import ProductService from "@/services/ProductService";

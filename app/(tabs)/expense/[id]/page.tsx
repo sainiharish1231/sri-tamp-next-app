@@ -2,6 +2,8 @@
 
 // app/expense/[id].tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   ScrollView,
   TouchableOpacity,
@@ -11,10 +13,9 @@ import {
   Animated,
   webStyle,
 } from 'react-native';
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { ArrowLeft, Trash2, Pencil, Calendar, User, Building2, ReceiptText } from 'lucide-react-native';
+import { ArrowLeft, Trash2, Pencil, Calendar, User, Building2, ReceiptText } from 'lucide-react';
 import { colors } from '@/colors';
 import { Expense } from '@/types/expense.types';
 import expenseService from '@/services/ExpenseService';

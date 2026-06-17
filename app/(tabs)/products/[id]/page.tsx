@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { Toast } from "@/utils/toast";
+
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   ScrollView,
   Image,
@@ -11,7 +15,6 @@ import {
   Platform,
   webStyle,
 } from "react-native";
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import {
   Share2,
   MessageCircle,
@@ -26,7 +29,7 @@ import {
   CheckCircle,
   Pencil,
   Trash2,
-} from "lucide-react-native";
+} from "lucide-react";
 import ProductService from "@/services/ProductService";
 import { colors } from "@/colors";
 import { SafeAreaView } from "react-native-safe-area-context";

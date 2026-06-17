@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useRouter } from "expo-router";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -22,7 +21,7 @@ import {
   RotateCw,
   Search,
   X,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import FinancialTransactionService from "@/services/FinancialTransactionService";

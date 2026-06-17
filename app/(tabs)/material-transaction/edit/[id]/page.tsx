@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { colors } from "@/colors";

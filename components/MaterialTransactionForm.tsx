@@ -20,6 +20,8 @@ import {
   webStyle,
 } from "react-native";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { colors } from "@/colors";
 import MaterialTransactionService from "@/services/MaterialTransactionService";

@@ -17,7 +17,6 @@ import {
   Animated,
   webStyle,
 } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/colors";

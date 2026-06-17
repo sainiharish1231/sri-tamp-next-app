@@ -12,8 +12,7 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, useRouter } from "expo-router";
-import { ArrowDownLeft, ArrowUpRight, Plus, Search, X } from "lucide-react-native";
+import { ArrowDownLeft, ArrowUpRight, Plus, Search, X } from "lucide-react";
 import { colors } from "@/colors";
 import FinancialTransactionService from "@/services/FinancialTransactionService";
 import { useAuthStore } from "@/store/auth.store";

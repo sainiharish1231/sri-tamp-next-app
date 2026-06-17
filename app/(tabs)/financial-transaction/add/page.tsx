@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import { Alert, StyleSheet, TouchableOpacity, webStyle } from "react-native";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react";
 import { colors } from "@/colors";
 import FinancialTransactionForm from "@/components/FinancialTransactionForm";
 import type { FinancialTransactionFormData } from "@/components/FinancialTransactionForm";

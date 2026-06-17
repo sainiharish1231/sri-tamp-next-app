@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   ActivityIndicator,
   Alert,

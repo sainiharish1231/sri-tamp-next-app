@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Toast } from "@/utils/toast";
+
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import { TouchableOpacity, StyleSheet, ActivityIndicator, webStyle } from "react-native";
-import { router, useLocalSearchParams, Stack } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import { ChevronLeft } from "lucide-react";
 import ProductForm from "@/components/ProductForm";
 import ProductService from "@/services/ProductService";
 import { SafeAreaView } from "react-native-safe-area-context";

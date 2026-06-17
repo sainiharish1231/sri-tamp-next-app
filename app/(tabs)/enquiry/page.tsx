@@ -31,8 +31,7 @@ import {
   RefreshCw,
   XCircle,
   Trash2,
-} from "lucide-react-native";
-import { useRouter } from "expo-router";
+} from "lucide-react";
 import { colors } from "@/colors";
 import EnquiryService from "@/services/EnquiryService";
 import { EnquiryTypes } from "@/types/enquiry.types";

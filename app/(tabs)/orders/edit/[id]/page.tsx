@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import { TouchableOpacity, StyleSheet, ActivityIndicator, webStyle } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CreateOrderForm from "@/components/OrderForm";

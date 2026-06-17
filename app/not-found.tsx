@@ -1,8 +1,7 @@
 "use client";
 
-import { Link, Stack } from "expo-router";
 import { StyleSheet, webStyle } from "react-native";
-import { AlertCircle } from "lucide-react-native";
+import { AlertCircle } from "lucide-react";
 import { colors } from "@/colors";
 
 export default function NotFoundScreen() {

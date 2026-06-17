@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Toast from "react-native-toast-message";
 import { AppAlertProvider } from "@/components/AppAlertProvider";
 import { AppProvider } from "@/context/AppContext";
 import { LanguageProvider } from "@/context/LanguageContext";

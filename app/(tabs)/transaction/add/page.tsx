@@ -2,9 +2,8 @@
 
 import React from "react";
 import { TouchableOpacity, StyleSheet, webStyle } from "react-native";
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react";
 import { colors } from "@/colors";
 import TransactionForm from "@/components/TransactionForm";
 import { useLanguage } from "@/hooks/use-language";

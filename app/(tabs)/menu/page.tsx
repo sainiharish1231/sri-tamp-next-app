@@ -4,13 +4,8 @@ import { colors } from "@/colors";
 import PartyService from "@/services/PartyService";
 import UserService from "@/services/UserService";
 import { useAuthStore } from "@/store/auth.store";
-import { extractPartyId,
-  extractUserId,
-  getAccessFlags } from "@/utils/access";
-import { LinearGradient } from "expo-linear-gradient";
-import { Href,
-  useFocusEffect,
-  useRouter } from "expo-router";
+import { extractPartyId, extractUserId, getAccessFlags } from "@/utils/access";
+import { useLocalSearchParams } from "@/compat/expo-router";
 import {
   Activity,
   Box,
@@ -31,7 +26,7 @@ import {
   UserCog,
   Users,
   WalletMinimal,
-  } from "lucide-react-native";
+  } from "lucide-react";
 import { useCallback,
   useMemo,
   useState } from "react";

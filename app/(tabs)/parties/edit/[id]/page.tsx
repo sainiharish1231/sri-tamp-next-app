@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   TouchableOpacity,
   Alert,
@@ -9,7 +11,6 @@ import {
   webStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import PartyService from "@/services/PartyService";
 import CountriesService from "@/services/CountriesService";
 import { colors } from "@/colors";

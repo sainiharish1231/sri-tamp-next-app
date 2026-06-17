@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   webStyle,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -23,7 +22,7 @@ import {
   User,
   Wallet,
   X,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import ExpenseService from "@/services/ExpenseService";
 import { Expense, PaidByType } from "@/types/expense.types";

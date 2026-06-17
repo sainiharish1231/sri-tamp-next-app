@@ -2,6 +2,8 @@
 
 // app/expense/edit/[id].tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   TouchableOpacity,
   StyleSheet,
@@ -9,9 +11,8 @@ import {
   ActivityIndicator,
   webStyle,
 } from 'react-native';
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft } from 'lucide-react';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/colors';
 import { CreateExpenseDto, Expense } from '@/types/expense.types';

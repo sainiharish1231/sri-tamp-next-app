@@ -20,13 +20,15 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   ArrowDownLeft,
   ArrowUpRight,
   RotateCcw,
   RotateCw,
   Check,
-} from "lucide-react-native";
+} from "lucide-react";
 import PartyService from "@/services/PartyService";
 import ProductService from "@/services/ProductService";
 import MaterialService from "@/services/MaterialService";

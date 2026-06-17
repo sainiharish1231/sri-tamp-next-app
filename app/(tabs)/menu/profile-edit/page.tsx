@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   webStyle,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ArrowLeft,
@@ -22,7 +21,7 @@ import {
   Phone,
   Save,
   User,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import PartyService from "@/services/PartyService";
 import UserService from "@/services/UserService";

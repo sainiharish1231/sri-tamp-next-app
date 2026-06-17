@@ -1,13 +1,15 @@
 "use client";
 
 import { colors } from "@/colors";
+import { Toast } from "@/utils/toast";
+
+import { useRouter } from "next/navigation";
+
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import { useLanguage } from "@/hooks/use-language";
 import AuthService from "@/services/AuthService";
 import { useAuthStore } from "@/store/auth.store";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   ActivityIndicator,
@@ -23,7 +25,6 @@ import {
   Animated,
   webStyle,
 } from "react-native";
-import Toast from "react-native-toast-message";
 import { Country } from "@/types/country.types";
 import CountriesService from "@/services/CountriesService";
 import { getDeviceMetrics } from "@/utils/responsive";

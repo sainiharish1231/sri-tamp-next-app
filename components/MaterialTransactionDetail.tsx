@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useLocalSearchParams } from "@/compat/expo-router";
+
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +21,7 @@ import {
   PencilLine,
   User,
   Download,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import MaterialTransactionService from "@/services/MaterialTransactionService";

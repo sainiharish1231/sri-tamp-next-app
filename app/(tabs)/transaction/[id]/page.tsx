@@ -10,7 +10,6 @@ import {
   Animated,
   webStyle,
 } from "react-native";
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -27,7 +26,7 @@ import {
   Hash,
   Scale,
   IndianRupee,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import TransactionService from "@/services/TransactionService";
 import { useLanguage } from "@/hooks/use-language";

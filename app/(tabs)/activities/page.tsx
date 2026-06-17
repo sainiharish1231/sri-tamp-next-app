@@ -10,8 +10,7 @@ import {
   webStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Activity, ArrowRight, RefreshCw } from "lucide-react-native";
-import { useRouter } from "expo-router";
+import { Activity, ArrowRight, RefreshCw } from "lucide-react";
 import { colors } from "@/colors";
 import ActivityService from "@/services/ActivityService";
 import type { ActivityLog, ActivityModule } from "@/types/activity.types";
