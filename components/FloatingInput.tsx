@@ -1,7 +1,7 @@
 "use client";
 import { FormEvent, ChangeEvent, MouseEvent, useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
 
-import { FormEvent, ChangeEvent, MouseEvent, colors } from "@/colors";
+import { colors } from "@/colors";
 import {
   AlertCircle,
   CheckCircle,

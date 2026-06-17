@@ -10,7 +10,7 @@ interface LinearGradientProps {
   [key: string]: any;
 }
 
-export const LinearGradient: React.FC<divProps> = ({
+export const LinearGradient: React.FC<LinearGradientProps> = ({
   colors = ['#000000', '#ffffff'],
   start = { x: 0, y: 0 },
   end = { x: 1, y: 1 },

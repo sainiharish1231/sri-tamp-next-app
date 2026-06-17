@@ -18,7 +18,7 @@ import {
 import CountriesService from "@/services/CountriesService";
 import type { Country } from "@/types/country.types";
 import type { CreateEmployeeDto, Employee } from "@/types/employee.types";
-import { FormEvent, ChangeEvent, MouseEvent, extractArrayPayload } from "@/utils/response";
+import { extractArrayPayload } from "@/utils/response";
 
 export interface EmployeeFormData extends CreateEmployeeDto {
   isActive?: boolean;

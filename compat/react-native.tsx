@@ -1,5 +1,4 @@
 import React from "react";
-import * as RNW from "react-native-web";
 
 const fallbackWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let canReadLiveWindowDimensions = false;
@@ -1498,7 +1497,7 @@ export const StyleSheet = {
   },
 };
 
-const BaseAnimated = (RNW as any).Animated;
+const BaseAnimated = {} as any; // Placeholder for Animated
 const withoutNativeDriver = (config: any) =>
   isObject(config) ? { ...config, useNativeDriver: false } : config;
 
@@ -1518,7 +1517,7 @@ export const Animated = {
   Text: BaseAnimated?.Text || Text,
 };
 
-export const PanResponder = (RNW as any).PanResponder;
+export const PanResponder = ({} as any).PanResponder;
 
 export const Platform = {
   OS: "web",

@@ -1,5 +1,6 @@
 "use client";
 
+import { ReactNode } from "react";
 
 type KeyboardAwareModalProps = {
   visible?: boolean;

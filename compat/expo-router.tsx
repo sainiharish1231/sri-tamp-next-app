@@ -6,7 +6,7 @@ import {
   usePathname,
   useRouter as useNextRouter
 } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect as ReactUseEffect, useMemo, useState } from "react";
 
 export type Href<T = string> = T;
 
@@ -52,7 +52,7 @@ export function useLocalSearchParams<T extends Record<string, any> = Record<stri
   const pathname = usePathname();
   const [query, setQuery] = useState<Record<string, string>>({});
 
-  useEffect(() => {
+  ReactUseEffect(() => {
     if (typeof window === "undefined") return;
     const searchParams = new URLSearchParams(window.location.search);
     const nextQuery: Record<string, string> = {};
@@ -67,14 +67,14 @@ export function useLocalSearchParams<T extends Record<string, any> = Record<stri
   }, [params, query]);
 }
 
-export function useEffect(effect: React.EffectCallback) {
+export function useFocusEffect(effect: React.EffectCallback) {
   const pathname = usePathname();
-  useEffect(effect, [effect, pathname]);
+  ReactUseEffect(effect, [effect, pathname]);
 }
 
 export function Redirect({ href }: { href: any }) {
   const navigation = useRouter();
-  useEffect(() => {
+  ReactUseEffect(() => {
     navigation.replace(href);
   }, [href, navigation]);
   return null;

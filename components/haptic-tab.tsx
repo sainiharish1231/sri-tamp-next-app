@@ -1,18 +1,12 @@
 "use client";
 
-import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
-import { PlatformPressable } from '@react-navigation/elements';
-
-export function HapticTab(props: BottomTabBarButtonProps) {
+export function HapticTab({ onPressIn, ...props }: any) {
   return (
-    <PlatformPressable
+    <button
       {...props}
-      onPressIn={(ev) => {
-        if (false) {
-          // Add a soft haptic feedback when pressing down on the tabs.
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-        props.onPressIn?.(ev);
+      onMouseDown={(ev: any) => {
+        // Haptic feedback not available on web
+        onPressIn?.(ev);
       }}
     />
   );
