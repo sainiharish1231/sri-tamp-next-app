@@ -40,7 +40,8 @@ import {
   Upload,
   User,
   Users,
-  X
+  X,
+  MapPin
 } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -99,7 +100,26 @@ const iconMap: Record<string, any> = {
   user: User,
   person: User,
   people: Users,
-  users: Users
+  users: Users,
+  // Additional mappings for missing icons
+  "lock-closed-outline": Menu,
+  "chatbubble-outline": Mail,
+  "create": Edit,
+  "copy": FileText,
+  "trending-up": ArrowUp,
+  "trending-down": ArrowDown,
+  "bar-chart": FileText,
+  "pie-chart": FileText,
+  "time": Calendar,
+  "call": Phone,
+  "location": MapPin,
+  "pricetag": CreditCard,
+  "funnel": Menu,
+  "zoom-in": Plus,
+  "zoom-out": Minus,
+  "ellipsis-vertical": Menu,
+  "more-vertical": Menu,
+  "lock": Menu
 };
 
 function normalizeIconName(name?: string) {
@@ -115,8 +135,12 @@ export function Icon({ name, size = 20, color = "currentColor", style, ...props 
 
 const glyphMap = {} as Record<string, number>;
 
-export const Ionicons = Object.assign(Icon, { glyphMap });
-export const MaterialCommunityIcons = Object.assign(Icon, { glyphMap });
-export const MaterialIcons = Object.assign(Icon, { glyphMap });
+const IonIconsComponent = Object.assign(Icon, { glyphMap });
+const MaterialCommunityIconsComponent = Object.assign(Icon, { glyphMap });
+const MaterialIconsComponent = Object.assign(Icon, { glyphMap });
 
-export default Object.assign(Icon, { glyphMap });
+export const Ionicons = IonIconsComponent;
+export const MaterialCommunityIcons = MaterialCommunityIconsComponent;
+export const MaterialIcons = MaterialIconsComponent;
+
+export default IonIconsComponent;

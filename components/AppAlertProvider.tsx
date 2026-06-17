@@ -12,6 +12,7 @@ import {
   StyleSheet,
   webStyle,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { getDeviceMetrics } from "@/utils/responsive";
 
 type AlertState = {

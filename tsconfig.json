@@ -27,6 +27,7 @@
       "@react-native-async-storage/async-storage": ["./compat/async-storage.ts"],
       "lucide-react-native": ["./compat/lucide-react-native.ts"],
       "@expo/vector-icons": ["./compat/vector-icons.tsx"],
+      "@expo/vector-icons/Ionicons": ["./compat/vector-icons.tsx"],
       "@expo/vector-icons/MaterialIcons": ["./compat/vector-icons.tsx"],
       "react-native-vector-icons/MaterialCommunityIcons": ["./compat/vector-icons.tsx"],
       "react-native-reanimated": ["./compat/reanimated.tsx"],
