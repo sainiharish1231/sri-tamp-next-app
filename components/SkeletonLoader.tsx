@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { colors } from "@/colors";
 import { getDeviceMetrics } from "@/utils/responsive";
+import { Animated, StyleSheet, ViewStyle, webStyle } from "@/compat/react-native";
 
 type SkeletonLoaderProps = {
   rows?: number;

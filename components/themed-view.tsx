@@ -1,7 +1,6 @@
-import {
-  type ViewProps,
-  webStyle,
 
+
+import { ViewProps, webStyle } from '@/compat/react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export type ThemedViewProps = ViewProps & {

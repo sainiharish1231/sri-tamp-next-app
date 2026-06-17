@@ -24,6 +24,7 @@ import { Party } from "@/types/party";
 import { useAuthStore } from "@/store/auth.store";
 import { getDeviceMetrics } from "@/utils/responsive";
 import { splitAmountAndUnit } from "@/utils/productPricing";
+import { useRouter } from "next/router";
 
 const { width, isXs: isSmallScreen } = getDeviceMetrics();
 

@@ -39,6 +39,7 @@ import { generateText } from "@rork-ai/toolkit-sdk";
 import { useAuthStore } from "@/store/auth.store";
 import { getDeviceMetrics } from "@/utils/responsive";
 import { useLanguage } from "@/hooks/use-language";
+import { useRouter } from "next/router";
 
 const { width: SCREEN_WIDTH, isXs: isSmallDevice } = getDeviceMetrics();
 
