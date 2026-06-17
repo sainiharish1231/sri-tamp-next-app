@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLocalSearchParams, Stack } from "@/compat/expo-router";
 import {
   ActivityIndicator,
   Alert,
@@ -18,7 +20,7 @@ import {
   Trash2,
   User,
   Download,
-} from "lucide-react-native";
+} from "lucide-react";
 import { colors } from "@/colors";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import FinancialTransactionService from "@/services/FinancialTransactionService";

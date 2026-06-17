@@ -12,6 +12,7 @@ import {
   webStyle,
 } from "react-native";
 import { colors } from "@/colors";
+import { Ionicons } from "@expo/vector-icons";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import {
   CreateExpenseDto,

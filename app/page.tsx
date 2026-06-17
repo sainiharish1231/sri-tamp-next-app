@@ -1,19 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import {
-  Redirect,
-  useRouter } from "expo-router";
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  webStyle,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { colors } from "@/colors";
 import { useLanguage } from "@/hooks/use-language";
 import images from "../constants/images";
@@ -24,6 +13,7 @@ const { width, height, isXs: isSmallDevice } = getDeviceMetrics();
 
 const responsiveWidth = (w: number) => (width * w) / 100;
 const responsiveHeight = (h: number) => (height * h) / 100;
+
 const font = {
   loader: isSmallDevice ? 13 : 15,
   loaderSub: isSmallDevice ? 11 : 13,
@@ -47,64 +37,82 @@ export default function StartScreen() {
     initAuth();
   }, [loadSession]);
 
+  useEffect(() => {
+    // Redirect to tabs if authenticated
+    if (isAuthenticated && !isLoading) {
+      router.push("/(tabs)");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-primary">
-        <LinearGradient
-          colors={[colors.primary, colors.primary]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ position: "absolute", inset: 0 }}
-        />
-        <div className="flex-1 justify-center items-center">
-          <div className="items-center">
-            <ActivityIndicator size="large" color={colors.primaryLight} />
-            <span
-              style={webStyle({
-                marginTop: isSmallDevice ? 14 : 20,
-                fontSize: font.loader,
-                color: colors.white,
-                fontWeight: "600",
-                letterSpacing: 0,
-              })}
-            >
-              {t("loading")}
-            </span>
-            <span
-              style={webStyle({
-                marginTop: 8,
-                fontSize: font.loaderSub,
-                color: colors.primaryFaint,
-              })}
-            >
-              San Raj Metal Art
-            </span>
+      <div
+        style={{
+          background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primary} 100%)`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          padding: "20px",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              border: `4px solid ${colors.primaryLight}`,
+              borderTop: `4px solid transparent`,
+              animation: "spin 1s linear infinite",
+              margin: "0 auto",
+            }}
+          />
+          <div
+            style={{
+              marginTop: isSmallDevice ? 14 : 20,
+              fontSize: font.loader,
+              color: colors.white,
+              fontWeight: "600",
+              letterSpacing: 0,
+            }}
+          >
+            {t("loading")}
+          </div>
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: font.loaderSub,
+              color: colors.primaryFaint,
+            }}
+          >
+            San Raj Metal Art
           </div>
         </div>
-      </SafeAreaView>
+        <style>{`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
     );
   }
 
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
-  }
-
   return (
-    <SafeAreaView className="flex-1">
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={colors.primary}
-        translucent={false}
-      />
-      <LinearGradient
-        colors={[colors.primary, colors.primary, colors.gray600]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{ position: "absolute", inset: 0 }}
-      />
-
+    <div
+      style={{
+        background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primary} 50%, ${colors.gray600} 100%)`,
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "auto",
+        position: "relative",
+      }}
+    >
+      {/* Background decoration circle */}
       <div
-        style={webStyle({
+        style={{
           position: "absolute",
           bottom: -height * 0.15,
           left: -width * 0.25,
@@ -112,138 +120,131 @@ export default function StartScreen() {
           height: width * 0.5,
           borderRadius: width * 0.25,
           backgroundColor: colors.primaryLight + "18",
-        })}
+          pointerEvents: "none",
+        }}
       />
 
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
+      {/* Main content */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
           justifyContent: "space-between",
+          padding: "20px",
+          position: "relative",
+          zIndex: 1,
         }}
-        showsVerticalScrollIndicator={false}
       >
-        <div
-          style={webStyle({
-            marginTop: responsiveHeight(isSmallDevice ? 5 : 8),
-            alignItems: "center",
-          })}
-        >
-          <span
-            style={webStyle({
+        {/* Header section */}
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
               fontSize: font.brand,
               fontWeight: "800",
               color: colors.white,
-              textAlign: "center",
-              letterSpacing: 0,
-            })}
+              marginTop: responsiveHeight(isSmallDevice ? 5 : 8),
+              letterSpacing: "1px",
+            }}
           >
             San Raj
-          </span>
-          <span
-            className="text-yellow-300"
-            style={webStyle({
+          </div>
+          <div
+            style={{
               fontSize: font.brandSub,
               fontWeight: "800",
-              textAlign: "center",
-              letterSpacing: 0,
+              color: "#FCD34D",
               marginTop: isSmallDevice ? -2 : -5,
-            })}
+              letterSpacing: "1px",
+            }}
           >
             Metal Art
-          </span>
+          </div>
 
-          <span
-            style={webStyle({
+          <div
+            style={{
               fontSize: font.tagline,
               fontWeight: "500",
               color: colors.primaryFaint,
-              textAlign: "center",
               marginTop: isSmallDevice ? 8 : 12,
-              paddingHorizontal: isSmallDevice ? 24 : 40,
-              letterSpacing: 0,
-            })}
+              paddingLeft: isSmallDevice ? 24 : 40,
+              paddingRight: isSmallDevice ? 24 : 40,
+              lineHeight: 1.4,
+            }}
           >
             {t("premium_brass_metal_statues")}
-          </span>
+          </div>
 
+          {/* Decorative divider */}
           <div
-            style={webStyle({
-              flexDirection: "row",
+            style={{
+              display: "flex",
               alignItems: "center",
-              marginTop: isSmallDevice ? 14 : 20,
+              justifyContent: "center",
               gap: isSmallDevice ? 8 : 10,
-            })}
+              marginTop: isSmallDevice ? 14 : 20,
+            }}
           >
             <div
-              style={webStyle({
+              style={{
                 width: isSmallDevice ? 28 : 40,
                 height: 2,
                 backgroundColor: colors.secondary,
                 opacity: 0.5,
-              })}
+              }}
             />
             <div
-              style={webStyle({
+              style={{
                 width: 8,
                 height: 8,
                 borderRadius: 4,
                 backgroundColor: colors.secondary,
-              })}
+              }}
             />
             <div
-              style={webStyle({
+              style={{
                 width: isSmallDevice ? 28 : 40,
                 height: 2,
                 backgroundColor: colors.secondary,
                 opacity: 0.5,
-              })}
+              }}
             />
           </div>
         </div>
 
-        <div
-          style={webStyle({
-            marginTop: responsiveHeight(isSmallDevice ? 3 : 5),
-            alignItems: "center",
-          })}
-        >
+        {/* Logo and features section */}
+        <div style={{ textAlign: "center" }}>
           <div
-            style={webStyle({
-              alignItems: "center",
+            style={{
+              display: "flex",
               justifyContent: "center",
               marginBottom: isSmallDevice ? 12 : 20,
-            })}
+              filter: `drop-shadow(0 0 30px ${colors.primaryLight}4d)`,
+            }}
           >
-            <div
-              style={webStyle({
-                shadowColor: colors.primaryLight,
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.3,
-                shadowRadius: 30,
-                elevation: 10,
-              })}
-            >
-              <Image
-                source={images.logo}
-                resizeMode="contain"
-                style={{
-                  width: responsiveWidth(isSmallDevice ? 58 : 70),
-                  height: responsiveHeight(isSmallDevice ? 18 : 25),
-                  maxHeight: isSmallDevice ? 170 : 250,
-                }}
-              />
-            </div>
+            <img
+              src={String(images.logo)}
+              alt="San Raj Metal Art"
+              style={{
+                width: `${responsiveWidth(isSmallDevice ? 58 : 70)}px`,
+                height: `${responsiveHeight(isSmallDevice ? 18 : 25)}px`,
+                maxHeight: isSmallDevice ? 170 : 250,
+                objectFit: "contain",
+              }}
+            />
           </div>
 
+          {/* Feature chips */}
           <div
-            style={webStyle({
-              flexDirection: "row",
+            style={{
+              display: "flex",
               flexWrap: "wrap",
               justifyContent: "center",
               gap: isSmallDevice ? 8 : 15,
-              paddingHorizontal: isSmallDevice ? 12 : 20,
+              paddingLeft: isSmallDevice ? 12 : 20,
+              paddingRight: isSmallDevice ? 12 : 20,
               marginTop: isSmallDevice ? 6 : 10,
-            })}
+            }}
           >
             {[
               { icon: "🪞", text: t("handcrafted_brass") },
@@ -251,25 +252,27 @@ export default function StartScreen() {
             ].map((feature, idx) => (
               <div
                 key={idx}
-                style={webStyle({
+                style={{
                   backgroundColor: colors.white + "12",
-                  paddingHorizontal: isSmallDevice ? 10 : 16,
-                  paddingVertical: isSmallDevice ? 6 : 8,
+                  paddingLeft: isSmallDevice ? 10 : 16,
+                  paddingRight: isSmallDevice ? 10 : 16,
+                  paddingTop: isSmallDevice ? 6 : 8,
+                  paddingBottom: isSmallDevice ? 6 : 8,
                   borderRadius: 50,
-                  flexDirection: "row",
+                  display: "flex",
                   alignItems: "center",
                   gap: isSmallDevice ? 5 : 8,
-                })}
+                }}
               >
-                <span style={webStyle({ fontSize: isSmallDevice ? 13 : 16 })}>
+                <span style={{ fontSize: isSmallDevice ? 13 : 16 }}>
                   {feature.icon}
                 </span>
                 <span
-                  style={webStyle({
+                  style={{
                     color: colors.primaryFaint,
                     fontSize: font.chip,
                     fontWeight: "500",
-                  })}
+                  }}
                 >
                   {feature.text}
                 </span>
@@ -278,82 +281,77 @@ export default function StartScreen() {
           </div>
         </div>
 
+        {/* CTA section */}
         <div
-          className="flex flex-col gap-4 justify-between"
-          style={webStyle({
-            paddingHorizontal: responsiveWidth(6),
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            paddingLeft: responsiveWidth(6),
+            paddingRight: responsiveWidth(6),
             marginBottom: responsiveHeight(isSmallDevice ? 3 : 5),
             marginTop: responsiveHeight(isSmallDevice ? 2 : 3),
-          })}
+          }}
         >
-          <Pressable
-            onPress={() => router.push("/login")}
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.9 : 1,
-              transform: [{ scale: pressed ? 0.98 : 1 }],
-            })}
+          {/* Login button */}
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              background: `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.secondary} 100%)`,
+              border: "none",
+              padding: `${isSmallDevice ? 11 : responsiveHeight(2)}px 20px`,
+              borderRadius: 50,
+              color: colors.primary,
+              fontSize: font.button,
+              fontWeight: "700",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              boxShadow: `0 4px 8px ${colors.secondary}4d`,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(0.98)";
+              e.currentTarget.style.boxShadow = `0 2px 4px ${colors.secondary}4d`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = `0 4px 8px ${colors.secondary}4d`;
+            }}
           >
-            <LinearGradient
-              colors={[colors.secondary, colors.secondary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{
-                paddingVertical: isSmallDevice ? 11 : responsiveHeight(2),
-                borderRadius: 50,
-                shadowColor: colors.secondary,
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 5,
-              }}
-            >
-              <span
-                style={webStyle({
-                  color: colors.primary,
-                  textAlign: "center",
-                  fontSize: font.button,
-                  fontWeight: "700",
-                  letterSpacing: 0,
-                })}
-              >
-                {t("login")}
-              </span>
-            </LinearGradient>
-          </Pressable>
+            {t("login")}
+          </button>
 
+          {/* Info section */}
           <div
-            style={webStyle({
+            style={{
               marginTop: isSmallDevice ? 18 : 30,
               paddingTop: isSmallDevice ? 14 : 20,
-              borderTopWidth: 1,
-              borderTopColor: colors.white + "18",
-            })}
+              borderTop: `1px solid ${colors.white}18`,
+            }}
           >
-            <span
-              className="text-yellow-300"
-              style={webStyle({
+            <div
+              style={{
+                color: "#FCD34D",
                 textAlign: "center",
-
                 fontSize: font.footer,
                 fontWeight: "600",
                 marginBottom: isSmallDevice ? 5 : 8,
-              })}
+              }}
             >
               {t("our_collection")}
-            </span>
-            <span
-              style={webStyle({
+            </div>
+            <div
+              style={{
                 textAlign: "center",
                 color: colors.primaryFaint,
                 fontSize: font.footer,
                 lineHeight: isSmallDevice ? 16 : 20,
-              })}
+              }}
             >
               {t("collection_items")}
-            </span>
+            </div>
           </div>
         </div>
-      </ScrollView>
-    </SafeAreaView>
+      </div>
+    </div>
   );
 }
