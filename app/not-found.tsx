@@ -1,53 +1,22 @@
 "use client";
 
-import { Link, Stack } from "next/navigation";
-import { colors } from "@/colors";
+import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 
 export default function NotFoundScreen() {
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: "Oops!",
-          headerStyle: { backgroundColor: colors.secondary },
-        }}
-      />
-      <div style={webStyle(styles.container)}>
-        <AlertCircle color={colors.primary} size={64} />
-        <span style={webStyle(styles.title)}>This screen doesn&apos;t exist.</span>
-        <Link href="/" style={styles.link}>
-          <span style={webStyle(styles.linkText)}>Go to Dashboard</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <AlertCircle className="mx-auto mb-4" size={64} color="#6366f1" />
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Page Not Found</h1>
+        <p className="text-gray-600 mb-8">This page doesn&apos;t exist.</p>
+        <Link
+          href="/"
+          className="inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-indigo-700"
+        >
+          Go to Dashboard
         </Link>
       </div>
-    </>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-    backgroundColor: colors.gray50,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold" as const,
-    color: colors.gray900,
-    marginTop: 20,
-    marginBottom: 8,
-  },
-  link: {
-    marginTop: 24,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    backgroundColor: colors.purple,
-    borderRadius: 12,
-  },
-  linkText: {
-    fontSize: 16,
-    fontWeight: "600" as const,
-    color: colors.white,
-  },
-});
