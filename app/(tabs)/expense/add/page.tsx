@@ -8,6 +8,7 @@ import { colors } from "@/colors";
 import { CreateExpenseDto } from "@/types/expense.types";
 import expenseService from "@/services/ExpenseService";
 import ExpenseForm from "@/components/ExpenseForm";
+import { useRouter } from "next/router";
 
 export default function AddExpenseScreen() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function AddExpenseScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
+     
       <SafeAreaView style={styles.container} edges={["top"]}>
         <div style={webStyle(styles.header)}>
           <TouchableOpacity

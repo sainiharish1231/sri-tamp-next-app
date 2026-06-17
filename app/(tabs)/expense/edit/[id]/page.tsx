@@ -18,6 +18,7 @@ import { colors } from '@/colors';
 import { CreateExpenseDto, Expense } from '@/types/expense.types';
 import expenseService from '@/services/ExpenseService';
 import ExpenseForm from '@/components/ExpenseForm';
+import { useRouter } from 'next/router';
 
 export default function EditExpenseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -77,7 +78,7 @@ const fetchExpense = useCallback(async () => {
   if (loading) {
     return (
       <>
-        <Stack.Screen options={{ headerShown: false }} />
+       
         <div style={webStyle(styles.container)}>
           <SafeAreaView style={styles.headerSafe} edges={['top']}>
             <div style={webStyle(styles.header)}>
@@ -102,7 +103,7 @@ const fetchExpense = useCallback(async () => {
   if (!expense) {
     return (
       <>
-        <Stack.Screen options={{ headerShown: false }} />
+        
         <div style={webStyle(styles.container)}>
           <SafeAreaView style={styles.headerSafe} edges={['top']}>
             <div style={webStyle(styles.header)}>
@@ -147,7 +148,7 @@ const fetchExpense = useCallback(async () => {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
+     
       <div style={webStyle(styles.container)}>
         <SafeAreaView style={styles.headerSafe} edges={['top']}>
           <div style={webStyle(styles.header)}>
