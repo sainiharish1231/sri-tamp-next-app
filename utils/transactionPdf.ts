@@ -1,3 +1,6 @@
+import { Platform } from "react-native";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 
 type PdfKind = "order" | "material" | "financial";
 

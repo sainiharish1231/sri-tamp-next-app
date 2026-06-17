@@ -1,3 +1,1 @@
-import { toast } from "sonner";
-
-export default toast;
+export default Toast;

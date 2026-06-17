@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 
 const tailwindConfig: any = require("../tailwind.config");
 

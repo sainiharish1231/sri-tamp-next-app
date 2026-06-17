@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const KEYS = {
   APP_LANG: "app-language",
