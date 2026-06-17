@@ -1,6 +1,5 @@
 import { colors } from "@/colors";
 import { useLanguage } from "@/hooks/use-language";
-import { Ionicons } from "@expo/vector-icons";
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import {
   Alert,

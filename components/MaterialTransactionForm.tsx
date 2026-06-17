@@ -19,8 +19,6 @@ import {
   Switch,
   webStyle,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import KeyboardAwareModal from "@/components/KeyboardAwareModal";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { colors } from "@/colors";

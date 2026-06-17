@@ -2,7 +2,6 @@ import {
   StyleSheet,
   type TextProps,
   webStyle,
-} from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 

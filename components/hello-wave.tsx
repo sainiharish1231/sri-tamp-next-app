@@ -1,4 +1,3 @@
-import { webStyle } from "react-native";
 import Animated from 'react-native-reanimated';
 
 export function HelloWave() {

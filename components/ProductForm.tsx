@@ -12,9 +12,6 @@ import {
   Platform,
   webStyle,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
 import { Category, Material } from "@/types/product";
 import MaterialService from "@/services/MaterialService";
 import CategoryService from "@/services/CategoryService";
